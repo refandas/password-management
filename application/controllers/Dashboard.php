@@ -8,6 +8,9 @@ class Dashboard extends CI_Controller {
         $this->load->model('UserModel');
     }
 
+    /**
+     * Show index dashboard
+     */
     public function index() {
         if ($this->session->is_logged == 1) {
             $data = array(
@@ -26,6 +29,9 @@ class Dashboard extends CI_Controller {
         }
     }
 
+    /**
+     * Show all users
+     */
     public function users() {
         if ($this->session->access_level == 1) {
             $data = array(
@@ -44,6 +50,11 @@ class Dashboard extends CI_Controller {
         }
     }
 
+    /**
+     * Show spesific user
+     *
+     * @param $id_user
+     */
     public function user($id_user) {
         if ($this->session->access_level  == 1) {
             $data = array(
@@ -63,6 +74,9 @@ class Dashboard extends CI_Controller {
         }
     }
 
+    /**
+     * Logout, deleting session
+     */
     public function logout() {
         $userdata = array('email', 'access_level', 'name', 'is_logged');
         $this->session->unset_userdata($userdata);
