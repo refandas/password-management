@@ -41,7 +41,7 @@
                 <?php endif; ?>
 
                 <li class="nav-item has-treeview mt-4">
-                    <a href="#" class="nav-link">
+                    <a href="<?= base_url('setting'); ?>" class="nav-link">
                         <i class="nav-icon fas fa-cogs"></i>
                         <p>Setting</p>
                     </a>

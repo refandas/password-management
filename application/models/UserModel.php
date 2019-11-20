@@ -27,7 +27,7 @@ class UserModel extends CI_Model {
 
     //  method for update user
     public function updateUser($data) {
-        $this->db->where('email', $data);
+        $this->db->where('id_user', $data['id_user']);
         $this->db->update($this::TABLE_NAME, $data);
     }
 
@@ -74,6 +74,12 @@ class UserModel extends CI_Model {
     //  method for get user data from email
     public function findUserByEmail($email) {
         $user = $this->db->get_where($this::TABLE_NAME, array('email' => $email));
+
+        return $user->row_array();
+    }
+
+    public function findUserByID($id_user) {
+        $user = $this->db->get_where($this::TABLE_NAME, array('id_user' => $id_user));
 
         return $user->row_array();
     }
