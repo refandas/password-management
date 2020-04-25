@@ -8,8 +8,10 @@ class Auth extends CI_Controller {
         $this->load->model('UserModel');
     }
 
-    // method for create new user
-    public function create() {
+	/**
+	 * method for create new user
+	 */
+	public function create() {
         $name       = $this->input->post('name');
         $email      = $this->input->post('email');
         $password   = $this->input->post('password');
@@ -28,13 +30,13 @@ class Auth extends CI_Controller {
         }
     }
 
-    /*
-    |   mehod for authenticate that login is success or not
-    |   param for authenticate is email and password => authenticate(email, passoword)
-    |   if login is valid, make session that contains: id_user, access_level, and is_logged
-    |   if login is valid redirect to dashboard
-     */
-    public function login() {
+	/**
+	 * mehod for authenticate that login is success or not
+	 * param for authenticate is email and password => authenticate(email, passoword)
+	 * if login is valid, make session that contains: id_user, access_level, and is_logged
+	 * if login is valid redirect to dashboard
+	 */
+	public function login() {
         $email      = $this->input->post('email');
         $password   = $this->input->post('password');
 
@@ -60,8 +62,11 @@ class Auth extends CI_Controller {
         redirect('auth');
     }
 
-    // method for set new password
-    public function setPassword($id_user) {
+	/**
+	 * method for set new password
+	 * @param $id_user
+	 */
+	public function setPassword($id_user) {
         $password   = $this->input->post('password');
 
         $data = array(
@@ -74,8 +79,10 @@ class Auth extends CI_Controller {
         redirect('auth');
     }
 
-    // method for show login form
-    public function index() {
+	/**
+	 * method for show login form
+	 */
+	public function index() {
         $data = array(
             'title'     => 'Login - Password Management'
         );
@@ -85,8 +92,10 @@ class Auth extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    // method for show forgot password form
-    public function forgotPassword() {
+	/**
+	 * method for show forgot password form
+	 */
+	public function forgotPassword() {
         $data = array(
             'title'     => 'Forgot Password'
         );
@@ -96,8 +105,10 @@ class Auth extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    // method for show register form
-    public function register() {
+	/**
+	 * method for show register form
+	 */
+	public function register() {
         $data = array(
             'title'     => 'Register Now!'
         );
@@ -107,8 +118,10 @@ class Auth extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    // method for show reset password form, check is user email exists or not
-    public function resetPassword() {
+	/**
+	 * method for show reset password form, check is user email exists or not
+	 */
+	public function resetPassword() {
         $email  = $this->input->post('email');
         $data = array(
             'title'     => 'Reset Password',
@@ -124,4 +137,30 @@ class Auth extends CI_Controller {
             redirect('auth/forgotpassword');
         }
     }
+
+	/**
+	 * method for activate user
+	 * @param $id_user
+	 */
+	public function activateUser($id_user) {
+    	if ($this->UserModel->activateUser($id_user)) {
+	    	$this->session->set_flashdata('success', '<div style="color: #00c054">Aktivasi akun berhasil</div>');
+		} else {
+			$this->session->set_flashdata('failed', '<div style="color: #a71d2a">Aktivasi akun gagal</div>');
+		}
+    	redirect('dashboard/users');
+	}
+
+	/**
+	 * method for deactivate user
+	 * @param $id_user
+	 */
+	public function deactivateUser($id_user) {
+    	if ($this->UserModel->disableUser($id_user)) {
+			$this->session->set_flashdata('success', '<div style="color: #00c054">Deaktivasi akun berhasil</div>');
+    	} else {
+			$this->session->set_flashdata('failed', '<div style="color: #a71d2a">Deaktivasi akun gagal</div>');
+		}
+		redirect('dashboard/users');
+	}
 }

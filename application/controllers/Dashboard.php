@@ -35,7 +35,8 @@ class Dashboard extends CI_Controller {
     public function users() {
         if ($this->session->access_level == 1) {
             $data = array(
-                'title'     => 'Users'
+                'title'     => 'Users',
+                'users'     => $this->UserModel->getUsers()
             );
 
             $this->load->view('templates/header', $data);
@@ -59,6 +60,7 @@ class Dashboard extends CI_Controller {
         if ($this->session->access_level  == 1) {
             $data = array(
                 'title'     => 'User Detail',
+                'user'		=> $this->UserModel->findUserByID($id_user),
                 'id_user'   => $id_user
             );
 

@@ -7,8 +7,9 @@
                 <div class="row mb-2">
                     <div class="col-sm-6 offset-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v3</li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('dashboard'); ?>">Home</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('dashboard/users'); ?>">Users</a></li>
+                            <li class="breadcrumb-item active"><?php echo $user['name']; ?></li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -22,59 +23,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
-                            <h5 class="card-header">User Active</h5>
+                            <h5 class="card-header"><?php echo $user['name']; ?></h5>
                             <div class="card-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">User</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <th>1</th>
-                                        <td><a href="">Mark</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>2</th>
-                                        <td><a href="">Jacob</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>3</th>
-                                        <td><a href="">Larry the Bird</a></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <h5 class="card-header">User Not Registered</h5>
-                            <div class="card-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">User</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <th>1</th>
-                                        <td><a href="">Mark</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>2</th>
-                                        <td><a href="">Jacob</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>3</th>
-                                        <td><a href="">Larry the Bird</a></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <?php if ((int)$user['registered']) : ?>
+                                    <p>Status akun aktif, klik tombol berikut untuk mengaktifkan</p>
+                                    <a href="<?php echo base_url('auth/deactivateuser/') . $user['id_user']; ?>" class="btn btn-danger">Nonaktifkan User</a>
+                                <?php else : ?>
+                                    <p>Status akun nonaktif, klik tombol berikut untuk menonaktifkan</p>
+                                    <a href="<?php echo base_url('auth/activateuser/') . $user['id_user']; ?>" class="btn btn-success">Aktifkan User</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

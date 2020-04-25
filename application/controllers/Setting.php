@@ -10,7 +10,6 @@ class Setting extends CI_Controller {
 
     /**
      * Update email and name
-     *
      * @param $id_user
      */
     public function update($id_user) {
@@ -29,7 +28,6 @@ class Setting extends CI_Controller {
 
     /**
      * Reset password
-     *
      * @param $id_user
      */
     public function setPassword($id_user) {
@@ -49,7 +47,6 @@ class Setting extends CI_Controller {
      * Deactivate function, make user deactivate
      * It will change is_active to 0.
      * If action success, it will redirect to auth/login
-     *
      * @param $id_user
      */
     public function deactivate($id_user) {
@@ -60,7 +57,6 @@ class Setting extends CI_Controller {
 
     /**
      * Deleting account
-     *
      * @param $id_user
      */
     public function delete($id_user) {

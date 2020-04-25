@@ -14,7 +14,6 @@ class AccountModel extends CI_Model {
     /**
      * Add account media
      * Encrypted username or email and password
-     *
      * @param $data
      */
     public function addAccount($data) {
@@ -27,7 +26,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Generate key for encryption
-     *
      * @return string of key in hexadecimal.
      */
     private function generateKey() {
@@ -38,7 +36,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Get all account data
-     *
      * @return all account data
      */
     public function getAccounts() {
@@ -49,7 +46,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Get all of account data based on id user.
-     *
      * @param $id_user
      * @return all of account data based on id user.
      */
@@ -68,7 +64,6 @@ class AccountModel extends CI_Model {
      * Get account based on $id_account
      * if $single = TRUE, it will return account data with decrypted username or email and password,
      * otherwise, it will return data with encrypted username or email and password.
-     *
      * @param $id_account
      * @param bool $single
      * @return array of account
@@ -88,7 +83,6 @@ class AccountModel extends CI_Model {
     /**
      * get all account media name and icon
      * example: instagram, twitter, etc.
-     *
      * @return all of account media.
      */
     public function getAccountMedia() {
@@ -100,7 +94,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Edit account data
-     *
      * @param $data
      */
     public function editAccount($data) {
@@ -112,7 +105,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Delete account data
-     *
      * @param $id_account
      * @return true or false of action delete account.
      */
@@ -127,7 +119,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Encrypt username and password
-     *
      * @param $data
      * @return array of param given, username or email and password are encrypted
      */
@@ -187,7 +178,6 @@ class AccountModel extends CI_Model {
 
     /**
      * Get encryption key of account based on id account
-     *
      * @param $id_account
      * @return string of key
      */
@@ -201,7 +191,6 @@ class AccountModel extends CI_Model {
     /**
      * Initializing encryption cipher, mode, and key
      * Set $config['encryption_key'] with the key that been converted to biner
-     *
      * @param $key
      */
     private function initializeAndConfigEncryption($key) {

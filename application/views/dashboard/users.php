@@ -7,8 +7,8 @@
                 <div class="row mb-2">
                     <div class="col-sm-6 offset-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v3</li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('dashboard'); ?>">Home</a></li>
+                            <li class="breadcrumb-item active">Users</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -19,6 +19,14 @@
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
+                <div class="card">
+                    <?php if ($this->session->flashdata('success') or $this->session->flashdata('failed')) : ?>
+                    <div class="card-body">
+						<?php echo $this->session->flashdata('success'); ?>
+						<?php echo $this->session->flashdata('failed'); ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
@@ -32,18 +40,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <?php $count = 1; ?>
+                                    <?php foreach ($users as $user) : ?>
+                                        <?php if ((int)$user['registered'] and $user['access_level'] != 1) : ?>
                                     <tr>
-                                        <th>1</th>
-                                        <td><a href="">Mark</a></td>
+                                        <th><?php echo $count; ?></th>
+                                        <td><a href="<?php echo base_url('dashboard/user/') . $user['id_user']; ?>"><?php echo $user['name']; ?></a></td>
                                     </tr>
-                                    <tr>
-                                        <th>2</th>
-                                        <td><a href="">Jacob</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>3</th>
-                                        <td><a href="">Larry the Bird</a></td>
-                                    </tr>
+                                        <?php $count++; ?>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -51,7 +57,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card">
-                            <h5 class="card-header">User Not Registered</h5>
+                            <h5 class="card-header">User Not Active</h5>
                             <div class="card-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -61,18 +67,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <th>1</th>
-                                        <td><a href="">Mark</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>2</th>
-                                        <td><a href="">Jacob</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>3</th>
-                                        <td><a href="">Larry the Bird</a></td>
-                                    </tr>
+									<?php $count = 1; ?>
+									<?php foreach ($users as $user) : ?>
+										<?php if (!(int)$user['registered'] and $user['access_level'] != 1) : ?>
+                                            <tr>
+                                                <th><?php echo $count; ?></th>
+                                                <td><a href="<?php echo base_url('dashboard/user/') . $user['id_user']; ?>"><?php echo $user['name']; ?></a></td>
+                                            </tr>
+											<?php $count++; ?>
+										<?php endif; ?>
+									<?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
