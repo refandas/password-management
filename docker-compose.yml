@@ -1,4 +1,3 @@
-version: '3.3'
 services:
     web:
         build:
@@ -7,10 +6,10 @@ services:
         container_name: password-management
         depends_on:
             - db
-        volumes:
-            - ./:/var/www/html/
         ports:
             - 8000:80
+    # The database service is untouched by the migration (spec #1):
+    # same image, credentials, and host port as the pre-migration stack.
     db:
         container_name: pass-manag-db
         image: mysql:8.0
