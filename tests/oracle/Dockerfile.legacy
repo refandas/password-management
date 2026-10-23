@@ -1,0 +1,18 @@
+# Runtime wrapper for the legacy oracle: the pre-migration app on its original
+# PHP 7.3 Apache runtime, rebuilt so it builds today. Identical to the legacy
+# branch's Dockerfile except:
+#   - `apt-get update && apt-get upgrade -y` is dropped (Debian stretch is
+#     archived, apt exits 100; the app installs no apt packages), and
+#   - the trailing `service apache2 restart` is dropped (a no-op in a build
+#     step; the official image starts Apache itself at container start).
+# No application code is changed — the docker-compose volume bind-mounts the
+# pre-migration worktree over /var/www/html, exactly like the legacy stack.
+FROM php:7.3-apache
+
+RUN docker-php-ext-install mysqli
+
+EXPOSE 80
+
+RUN a2enmod rewrite && chmod -R 755 /var/www/html/
+
+COPY ./ /var/www/html
