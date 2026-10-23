@@ -14,7 +14,7 @@ $ ./scripts/run-acceptance.sh
 
 That builds the web image, starts the stack, waits for MySQL, loads
 `tests/seed/schema.sql` + `tests/seed/seed.sql`, asserts the fixture landed
-(2 Users, 4 Vault Accounts, 14 Media Types), and runs PHPUnit inside the web
+(3 Users, 4 Vault Accounts, 14 Media Types), and runs PHPUnit inside the web
 container against `http://localhost` (Apache in the same container). It is
 idempotent — the schema drops and recreates every table, so every run starts
 from the same dataset.
@@ -43,7 +43,8 @@ it also drives the [legacy oracle](legacy-oracle.md).
 ## Fixture
 
 - `tests/seed/plaintexts.php` — the single source of truth: one Admin User,
-  one regular User, Vault Accounts across several Media Types, with known
+  one regular User, one unactivated User (`registered = 0`, for the login
+  error state), Vault Accounts across several Media Types, with known
   plaintext credentials.
 - `tests/tools/generate-seed.php` — generates the loadable
   `tests/seed/seed.sql` from the plaintexts. Deterministic: per-account keys
@@ -83,6 +84,7 @@ the seeded rows to the plaintexts (see legacy-oracle.md).
 | ------------- | ----------------- | ----------- | ------------ |
 | Admin         | admin@email.com   | admin1234   | 1 (admin)    |
 | Jack (regular)| jack@email.com    | user1234    | 2 (user)     |
+| Ghost (unactivated)| ghost@email.com | ghost1234 | 2 (user)    |
 
 Vault Account plaintexts live in `tests/seed/plaintexts.php`; all four
 belong to Jack.

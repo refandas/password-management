@@ -43,14 +43,17 @@ return [
         [14, 'fab fa-steam', 'Steam'],
     ],
 
-    // One Admin User (Access Level 1) and one regular User (Access Level 2),
-    // both activated. `password` is the plaintext the suite logs in with;
+    // One Admin User (Access Level 1), one regular User (Access Level 2), both
+    // activated, and one unactivated User (`registered = 0`) so the login error
+    // state for an unactivated account is reachable and provable against the
+    // oracle (ticket #9). `password` is the plaintext the suite logs in with;
     // `password_hash` is the committed, portable hash seeded into the DB
     // (static so regeneration is byte-stable — same convention as the
     // pre-migration dump, which carried $2y$10$ hashes as literals).
     'users' => [
         ['id_user' => 1, 'email' => 'admin@email.com', 'name' => 'Admin', 'password' => 'admin1234', 'password_hash' => '$2y$12$GEVY4VmcO0XMwhUC1tFqhOmiaBNAXEKsY.WqrTFIG8rx94e/GjuUe', 'registered' => 1, 'access_level' => 1],
         ['id_user' => 2, 'email' => 'jack@email.com', 'name' => 'Jack', 'password' => 'user1234', 'password_hash' => '$2y$12$Tfp2pj2CF.wu84OJCESL/uzl6WU.A7uZ6rvf/pS1XvtlpTUTwllom', 'registered' => 1, 'access_level' => 2],
+        ['id_user' => 3, 'email' => 'ghost@email.com', 'name' => 'Ghost', 'password' => 'ghost1234', 'password_hash' => '$2y$12$zSRvbLy7WPU9c5t2OjtE2eQLmGxTtZy6fwA3OqCOKLhTTYRe50NIm', 'registered' => 0, 'access_level' => 2],
     ],
 
     // Vault Accounts belonging to the regular User, across several Media

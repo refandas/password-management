@@ -24,6 +24,9 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 
 app.baseURL = 'http://localhost:8000'
+# Legacy config has an empty index page (URLs without index.php); keep it so
+# site_url()/redirects stay byte-identical to the oracle.
+app.indexPage = ''
 # If you have trouble with `.`, you could also use `_`.
 # app_baseURL = ''
 # app.forceGlobalSecureRequests = false
