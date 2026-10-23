@@ -22,3 +22,9 @@ $routes->get('dashboard', 'Dashboard::index');
 $routes->get('dashboard/users', 'Dashboard::users');
 $routes->get('dashboard/user/(:segment)', 'Dashboard::user/$1');
 $routes->get('dashboard/logout', 'Dashboard::logout');
+
+// The Vault Account read path (ticket #11); the write methods port with #12.
+// account/index is the sidebar's href — CI3 auto-routing served it, too.
+$routes->get('account', 'Account::index');
+$routes->get('account/index', 'Account::index');
+$routes->get('account/detail_account/(:segment)', 'Account::detailAccount/$1');

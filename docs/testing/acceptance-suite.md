@@ -76,7 +76,10 @@ stored   = hex(hmac_sha512(payload, auth_key)) || payload
 
 `key` is the raw 32 bytes of `hex2bin(account.key_str)`. The format is proven
 against real CI3 code, not just this port: the oracle's detail page decrypts
-the seeded rows to the plaintexts (see legacy-oracle.md).
+the seeded rows to the plaintexts (see legacy-oracle.md). The ported app
+reads the same format through `app/Libraries/LegacyEncryption.php` (ticket
+#11) — the acceptance suite proves the two implementations agree on every
+run, since the app must decrypt exactly what the generator encrypts.
 
 ### Known credentials
 

@@ -81,4 +81,20 @@ abstract class BaseController extends Controller
             . view($view, $data)
             . view('templates/footer');
     }
+
+    /**
+     * The legacy full-layout sandwich: header, navbar, sidebar, body view,
+     * main_footer, footer — the six $this->load->view() calls the gated CI3
+     * application pages made (dashboard, account, setting). The ported
+     * dashboard stub still renders via page() until its real view ports.
+     */
+    protected function layoutPage(string $view, string $title, array $data = []): string
+    {
+        return view('templates/header', ['title' => $title])
+            . view('templates/navbar')
+            . view('templates/sidebar')
+            . view($view, $data)
+            . view('templates/main_footer')
+            . view('templates/footer');
+    }
 }
