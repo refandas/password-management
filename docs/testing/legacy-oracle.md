@@ -125,3 +125,29 @@ $ docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy \
 Location headers still point at `localhost:8000` (hardcoded legacy
 `base_url`), which is exactly what the assertions expect on both stacks.
 
+## Comparison recorded 2026-10-23 (ticket #11)
+
+The Vault Account read path — the list (`GET /account` and the sidebar's
+`GET /account/index`) and the detail page — asserted by the acceptance suite
+on both stacks (24/24 green on each, identical fixture):
+
+| Check on the oracle (:8001)                          | Result |
+| ---------------------------------------------------- | ------ |
+| Acceptance suite (all seven test files, incl. Account) | 24/24 green |
+| `GET /account` page bytes (logged in as Jack)        | byte-identical modulo CI4 toolbar markers and view-boundary newlines (the same noise class as the ticket #10 pages) |
+| `GET /account/detail_account/1` page bytes           | byte-identical (same) |
+| List row order (the join carries no ORDER BY)        | account id order — Instagram, Twitter, Amazon, Steam cards on both stacks |
+| Anonymous `GET /account/detail_account/1`            | 200 with Jack's decrypted plaintexts — CI3's detail_account() checked no session and no ownership; the parity hole is kept (like #10's ungated activation anchors) |
+| `GET /account/detail_account/999` (no row)           | 200 + empty form on both stacks; the oracle additionally prints inline PHP notices (its dev-mode display_errors) — not replicated |
+
+Run method: same as ticket #10 — both web containers joined the `parity`
+docker network, then
+`docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy web php vendor/bin/phpunit --no-coverage tests/Acceptance`.
+
+The decryption is the headline: the ported routine
+(`app/Libraries/LegacyEncryption.php`) reads rows the oracle's own CI3
+`Encryption` library provably decrypts (see the ticket #8 record) to the
+identical plaintexts through the HTTP seam — list and detail pages, every
+seeded account.
+
+
