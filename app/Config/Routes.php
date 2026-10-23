@@ -10,6 +10,13 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Auth::index');
 $routes->match(['get', 'post'], 'auth', 'Auth::index');
 $routes->match(['get', 'post'], 'auth/login', 'Auth::login');
+$routes->match(['get', 'post'], 'auth/register', 'Auth::register');
+$routes->match(['get', 'post'], 'auth/create', 'Auth::create');
+$routes->match(['get', 'post'], 'auth/forgotpassword', 'Auth::forgotPassword');
+$routes->match(['get', 'post'], 'auth/resetpassword', 'Auth::resetPassword');
+$routes->match(['get', 'post'], 'auth/setpassword/(:segment)', 'Auth::setPassword/$1');
+$routes->match(['get', 'post'], 'auth/activateuser/(:segment)', 'Auth::activateUser/$1');
+$routes->match(['get', 'post'], 'auth/deactivateuser/(:segment)', 'Auth::deactivateUser/$1');
 
 $routes->get('dashboard', 'Dashboard::index');
 $routes->get('dashboard/users', 'Dashboard::users');

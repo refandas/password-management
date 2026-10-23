@@ -98,3 +98,30 @@ new stack answers the CI4 welcome page. Not parity, as expected: no endpoint
 has been ported yet. Per-endpoint byte comparison against the oracle begins
 with the first ported endpoint (ticket 2) and is asserted by the acceptance
 suite from then on.
+
+## Comparison recorded 2026-10-23 (ticket #10)
+
+Registration, activation, and forgot/reset — the whole ticket #10 surface,
+asserted by the acceptance suite on both stacks (18/18 green on each,
+identical fixture):
+
+| Check on the oracle (:8001)                                             | Result |
+| ----------------------------------------------------------------------- | ------ |
+| Acceptance suite (all five files, incl. Registration/Activation/Forgot) | 18/18 green |
+| `GET /auth/register` page bytes                                         | byte-identical to the new stack (only CI4 dev-toolbar markers differ) |
+| `POST /auth/resetpassword` (existing email) — the set-password form     | byte-identical (same) |
+| `POST /auth/create` → flash + 303 `/auth`                               | identical — including the quirk: `registered = 1` is inserted, so the "activate before login" message overstates and the fresh User logs in immediately |
+| `GET /auth/activateuser/{id}` / `deactivateuser/{id}`                   | 307 `/dashboard/users`, Indonesian flash text byte-identical, `registered` flips — and the endpoints are ungated on both stacks (parity hole kept, post-migration backlog) |
+
+Run method for this round: both web containers joined one docker network
+(`docker network create parity`), then
+
+```console
+$ docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy \
+    web php vendor/bin/phpunit --no-coverage tests/Acceptance
+```
+
+— the suite drives the oracle by container name over port 80. The oracle's
+Location headers still point at `localhost:8000` (hardcoded legacy
+`base_url`), which is exactly what the assertions expect on both stacks.
+
