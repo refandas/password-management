@@ -23,10 +23,10 @@ docker compose exec -T db mysql -uroot -proot password_manager < tests/seed/seed
 # (The PHPUnit assertion below covers the HTTP leg; the default route does not
 # open the database yet — per-endpoint DB assertions begin with ticket 2.)
 seeded=$(docker compose exec -T db mysql -uroot -proot -N -B password_manager \
-    -e "SELECT (SELECT COUNT(*) FROM user)=2 AND (SELECT COUNT(*) FROM account)=4 AND (SELECT COUNT(*) FROM account_media)=14" \
+    -e "SELECT (SELECT COUNT(*) FROM user)=3 AND (SELECT COUNT(*) FROM account)=4 AND (SELECT COUNT(*) FROM account_media)=14" \
     | tr -d '[:space:]')
 if [ "$seeded" != "1" ]; then
-    echo "seed verification failed: expected 2 users, 4 accounts, 14 media types" >&2
+    echo "seed verification failed: expected 3 users, 4 accounts, 14 media types" >&2
     exit 1
 fi
 

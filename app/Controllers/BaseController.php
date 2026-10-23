@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
+use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -30,6 +31,12 @@ abstract class BaseController extends Controller
     // protected $session;
 
     /**
+     * Helpers loaded for every controller. `url` backs the ported legacy
+     * views, which call base_url() throughout.
+     */
+    protected $helpers = ['url'];
+
+    /**
      * @param CLIRequest|IncomingRequest $request
      *
      * @return void
@@ -45,5 +52,33 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+    }
+
+    /**
+     * Ported CI3 redirect() status rule (system/helpers/url_helper.php): on
+     * HTTP/1.1 a non-GET request answers 303 (Post/Redirect/Get) and a GET
+     * answers 307; anything else answers 302. The oracle's status codes are
+     * observable behavior — the port keeps them identical.
+     */
+    protected function legacyRedirect(string $uri): RedirectResponse
+    {
+        $code = 302;
+        if (service('superglobals')->server('SERVER_PROTOCOL') === 'HTTP/1.1') {
+            $code = $this->request->getMethod() !== 'GET' ? 303 : 307;
+        }
+
+        return redirect()->to($uri, $code);
+    }
+
+    /**
+     * The legacy page sandwich: header template (with the page title), body
+     * view, footer template — what every CI3 method rendered via
+     * $this->load->view() triplets.
+     */
+    protected function page(string $view, string $title, array $data = []): string
+    {
+        return view('templates/header', ['title' => $title])
+            . view($view, $data)
+            . view('templates/footer');
     }
 }

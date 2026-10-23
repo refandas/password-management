@@ -36,7 +36,8 @@ INSERT INTO `account_media` (`id_media`, `logo`, `name`) VALUES
 
 INSERT INTO `user` (`id_user`, `email`, `name`, `password`, `registered`, `access_level`) VALUES
 (1, 'admin@email.com', 'Admin', '$2y$12$GEVY4VmcO0XMwhUC1tFqhOmiaBNAXEKsY.WqrTFIG8rx94e/GjuUe', 1, 1),
-(2, 'jack@email.com', 'Jack', '$2y$12$Tfp2pj2CF.wu84OJCESL/uzl6WU.A7uZ6rvf/pS1XvtlpTUTwllom', 1, 2);
+(2, 'jack@email.com', 'Jack', '$2y$12$Tfp2pj2CF.wu84OJCESL/uzl6WU.A7uZ6rvf/pS1XvtlpTUTwllom', 1, 2),
+(3, 'ghost@email.com', 'Ghost', '$2y$12$zSRvbLy7WPU9c5t2OjtE2eQLmGxTtZy6fwA3OqCOKLhTTYRe50NIm', 0, 2);
 
 INSERT INTO `account` (`id_account`, `id_user`, `username_email`, `password`, `id_media`, `key_str`) VALUES
 (1, 2, '92d474bbef0fe99f9d591f6fc7631448d0d237f6a244a92f8d17b227a745988dec5e3ce6ba9cf35ca4ec9025baa55d5272f9dc5acf4004d53a18bae0dcb2e2b9LaFVFEm184Evq+HK6hyWW+yolb95jq97dhTyeRO4AyjF8+SnkNyszTZXMcI=', '0101233346a18db44c20e088a1f6442939187d931f8e5cb29badb4ebfc6fb5d1a2cee3431a03e906361dcde9360e68dbd214d2b532ac6da2d84e8018014322f0Gj+yQOnSPVPz7w5a86dNp7MFsYgwcValump9paREKg==', 1, '1a26fa2004c2fe3c8ea06381360ad4b2cfdb237b3e0c46fdedd791ac65d04b35'),
