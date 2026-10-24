@@ -150,4 +150,44 @@ The decryption is the headline: the ported routine
 identical plaintexts through the HTTP seam — list and detail pages, every
 seeded account.
 
+## Comparison recorded 2026-10-24 (ticket #12)
+
+The Vault Account write path — the add form (`GET /account/add_account`),
+add (`POST /account/add`), update (`POST /account/update/{id}`), delete
+(`GET /account/delete/{id}`) — asserted by the acceptance suite on both
+stacks (30/30 green on each, identical fixture):
+
+| Check on the oracle (:8003)                          | Result |
+| ---------------------------------------------------- | ------ |
+| Acceptance suite (all seven files, incl. AccountWrite) | 30/30 green |
+| `GET /account/add_account` page bytes (Jack logged in) | byte-identical modulo CI4 toolbar markers and view-boundary newlines (the established noise classes) |
+| `GET /account` list bytes (Jack logged in)            | byte-identical (same noise classes) |
+| Anonymous `POST /account/add`                        | 500 "Database Error" page, no row stored — the NOT NULL `id_user` rejects the null session User; the port answers its own dev error page with the same status and effect |
+| Anonymous `POST /account/update/3`                   | 303 → `/account`, row rewritten — update and delete check no session (parity hole kept, like the ungated detail page) |
+| `GET /account/delete/{id}` (any id, logged in or not) | 200, not a redirect — see below |
+
+### The delete quirk's dev-mode observable
+
+The oracle's delete answers a broken 200 — an inline "Illegal string
+offset 'username_email'" warning (the accidental assignment,
+`AccountModel` line 114) starts output before the redirect header fires
+under dev-mode display_errors. The row is still deleted and the flash
+still lands on the next request. That is the same dev-mode artifact class
+ticket #11 ruled "not replicated": with errors off (the legacy production
+setting), output never starts and the redirect stands. The port implements
+the production observable — clean delete, redirect, byte-identical flash —
+and the suite asserts the effects both stacks agree on (row gone, flash on
+the next page, empty detail render), leaving the delete response's own
+status unasserted.
+
+Run method: same as tickets #10/#11 — both web containers on the `parity`
+docker network, then
+`docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy web php vendor/bin/phpunit --no-coverage tests/Acceptance`.
+(The oracle mapped to host port 8003 this round — 8001/8002 were taken by
+unrelated host processes; the host port is cosmetic, the suite drives the
+container by name. Note `run-acceptance.sh` recreates the port's web
+container on rebuild, which drops its manual `parity` attachment — re-run
+`docker network connect parity password-management` before the next
+oracle comparison.)
+
 
