@@ -81,6 +81,19 @@ reads the same format through `app/Libraries/LegacyEncryption.php` (ticket
 #11) — the acceptance suite proves the two implementations agree on every
 run, since the app must decrypt exactly what the generator encrypts.
 
+### Write-path encryption (the CI4 encrypter)
+
+Rows written through the port (ticket #12) are encrypted by CI4's
+OpenSSLHandler with the row's per-account key passed per call — the same
+per-account key scheme, the framework's encrypter (ADR-0003).
+`app/Config/Encryption.php` keeps `$rawData = false` so the stored value is
+the ASCII envelope (hex HMAC prefix + base64 payload) the frozen latin1
+`varchar(256)` columns can hold. The CI4 envelope differs from the legacy
+one above (empty HKDF key infos, not `encryption`/`authentication`), so
+`AccountModel` reads each row with the legacy routine first and falls back
+to the CI4 handler: seeded/pre-cutover rows and port-written rows coexist
+until the cutover re-encryption retires the legacy format.
+
 ### Known credentials
 
 | User          | Email             | Password    | Access Level |

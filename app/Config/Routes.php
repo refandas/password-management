@@ -23,8 +23,14 @@ $routes->get('dashboard/users', 'Dashboard::users');
 $routes->get('dashboard/user/(:segment)', 'Dashboard::user/$1');
 $routes->get('dashboard/logout', 'Dashboard::logout');
 
-// The Vault Account read path (ticket #11); the write methods port with #12.
+// The Vault Account read path (ticket #11) and write path (ticket #12).
 // account/index is the sidebar's href — CI3 auto-routing served it, too.
+// Auto-routing answered any verb; the write routes carry its meaningful
+// GET/POST pair — other verbs 404, the one narrowing the port accepts.
 $routes->get('account', 'Account::index');
 $routes->get('account/index', 'Account::index');
 $routes->get('account/detail_account/(:segment)', 'Account::detailAccount/$1');
+$routes->match(['get', 'post'], 'account/add_account', 'Account::addAccount');
+$routes->match(['get', 'post'], 'account/add', 'Account::add');
+$routes->match(['get', 'post'], 'account/update/(:segment)', 'Account::update/$1');
+$routes->match(['get', 'post'], 'account/delete/(:segment)', 'Account::delete/$1');

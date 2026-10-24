@@ -78,9 +78,13 @@ class Encryption extends BaseConfig
      * Whether the cipher-text should be raw. If set to false, then it will be base64 encoded.
      * This setting is only used by OpenSSLHandler.
      *
-     * Set to false for CI3 Encryption compatibility.
+     * false: Vault Account credentials are written by the CI4 encrypter
+     * (ADR-0003, ticket #12) into the frozen latin1 varchar(256) columns,
+     * which cannot hold the handler's raw-binary output — the base64
+     * envelope (hex HMAC prefix, the same shape as the legacy CI3 format)
+     * is the ASCII-storable form.
      */
-    public bool $rawData = true;
+    public bool $rawData = false;
 
     /**
      * Encryption key info.
