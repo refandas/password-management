@@ -80,6 +80,24 @@ class UserModel extends Model
     }
 
     /**
+     * Every User row (legacy getUsers()): no ORDER BY, so the rows list in
+     * table order — id order for the seeded rows — exactly as in CI3.
+     */
+    public function getUsers(): array
+    {
+        return $this->findAll();
+    }
+
+    /**
+     * The User with this id_user, or null when no row matches (legacy
+     * findUserByID(); the missing-row case renders the empty page below).
+     */
+    public function findUserByID(int|string|null $id_user): ?array
+    {
+        return $this->where('id_user', $id_user)->first();
+    }
+
+    /**
      * Whether a User exists for this email (legacy userIsExists(), whose
      * $this->UserModel self-reference resolved to the model itself).
      */
