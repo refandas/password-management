@@ -19,7 +19,7 @@ final class UserManagementTest extends AcceptanceTestCase
         $this->assertSame(200, $list->statusCode);
         $this->assertStringContainsString('<title>Users</title>', $list->body);
 
-        // The full AdminLTE sandwich renders, sidebar included: the
+        // The Bootstrap 5 shell renders, sidebar included (#32): the
         // Access Level 1 menu shows USER and hides ACCOUNT.
         $this->assertStringContainsString('<p>USER</p>', $list->body);
         $this->assertStringNotContainsString('<p>ACCOUNT</p>', $list->body);

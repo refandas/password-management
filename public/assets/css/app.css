@@ -1,0 +1,53 @@
+/*
+ * Shell styling for the Bootstrap 5 port (#32, ADR-0005).
+ * Bootstrap itself is vendored untouched; what the shell adds lives here.
+ */
+
+/* Navbar on top, below it a flex row of sidebar + content. */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-shell {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* The sidebar: a dark rail at lg+, an offcanvas drawer below it. */
+.app-sidebar {
+    --bs-offcanvas-width: 260px;
+    background-color: #343a40;
+    width: 260px;
+}
+
+.app-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link:focus {
+    color: #fff;
+}
+
+/* Views open their own .content-wrapper; it is the content column. */
+.content-wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 1rem;
+}
+
+/* Legacy auth pages center one card in the viewport. */
+.vertical-center {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--bs-border-color);
+}

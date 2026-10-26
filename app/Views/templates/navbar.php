@@ -1,24 +1,12 @@
-<div class="wrapper">
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-            </li>
-        </ul>
-
-        <!-- SEARCH FORM -->
-        <form class="form-inline ml-3">
-            <div class="input-group input-group-sm">
-                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                    <button class="btn btn-navbar" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
-        </ul>
-    </nav>
-    <!-- /.navbar -->
+<!-- Top navbar: carries the offcanvas sidebar toggle (#32). -->
+<nav class="navbar navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Toggle sidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="<?= base_url('dashboard'); ?>">Password Management</a>
+        <span class="navbar-text d-none d-sm-inline"><i class="fas fa-user me-1"></i><?= session('name'); ?></span>
+    </div>
+</nav>
+<!-- Shell row: opened here, closed by main_footer. -->
+<div class="app-shell">

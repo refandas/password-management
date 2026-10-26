@@ -124,3 +124,6 @@ _modules/*
 
 /results/
 /phpunit.xml
+
+# Playwright MCP browser session artifacts
+.playwright-mcp/

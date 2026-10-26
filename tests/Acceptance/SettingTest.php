@@ -31,7 +31,7 @@ final class SettingTest extends AcceptanceTestCase
         $this->assertSame(200, $page->statusCode);
         $this->assertStringContainsString('<title>Setting</title>', $page->body);
 
-        // The full AdminLTE sandwich renders, sidebar included: the
+        // The Bootstrap 5 shell renders, sidebar included (#32): the
         // Setting menu item that leads here.
         $this->assertStringContainsString('<p>Setting</p>', $page->body);
 

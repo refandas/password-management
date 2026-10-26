@@ -28,25 +28,27 @@
     </form>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        // Check is first and second password is match or not
-        $('#password, #password2').on('keyup', function () {
-            if($('#password').val() == $('#password2').val()) {
-                $('#message').html('Same password').css('color', 'green');
-            }
-            else {
-                $('#message').html('Different password').css('color', 'red');
-            }
-        });
+<script>
+// #32: vanilla JS replaces the legacy $(...)-based checks.
+document.addEventListener('DOMContentLoaded', function () {
+    var password = document.getElementById('password');
+    var password2 = document.getElementById('password2');
+    var message = document.getElementById('message');
 
-        // Check that license agreement is checked or not
-        $('#license-accepted').click(function (event) {
-            if ($(this).prop('checked') == true ) {
-                $('#btn-submit').prop('disabled', false);
-            } else {
-                $('#btn-submit').prop('disabled', true);
-            }
-        });
+    function checkMatch() {
+        var same = password.value === password2.value;
+        message.textContent = same ? 'Same password' : 'Different password';
+        message.style.color = same ? 'green' : 'red';
+    }
+
+    password.addEventListener('keyup', checkMatch);
+    password2.addEventListener('keyup', checkMatch);
+    var license = document.getElementById('license-accepted');
+    var submit = document.getElementById('btn-submit');
+
+    license.addEventListener('change', function () {
+        submit.disabled = !license.checked;
     });
+});
+
 </script>

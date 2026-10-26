@@ -25,7 +25,7 @@ final class AccountTest extends AcceptanceTestCase
         $this->assertSame(200, $list->statusCode);
         $this->assertStringContainsString('<title>Account</title>', $list->body);
 
-        // The full AdminLTE sandwich renders, sidebar included: the
+        // The Bootstrap 5 shell renders, sidebar included (#32): the
         // Access Level 2 menu item that leads here.
         $this->assertStringContainsString('<p>ACCOUNT</p>', $list->body);
 
