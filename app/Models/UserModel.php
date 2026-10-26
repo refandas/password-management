@@ -63,6 +63,25 @@ class UserModel extends Model
     }
 
     /**
+     * Overwrite a User's profile — email and name (legacy updateUser();
+     * like setPassword(), its quirk of also SETting id_user to its own
+     * value is dropped, the observable update identical).
+     */
+    public function updateUser(?string $email, ?string $name, int|string $id_user): bool
+    {
+        return $this->update($id_user, ['email' => $email, 'name' => $name]);
+    }
+
+    /**
+     * Delete a User (legacy deleteUser()). Their Vault Accounts go with
+     * them — the schema's ON DELETE CASCADE, unchanged by the migration.
+     */
+    public function deleteUser(int|string $id_user): void
+    {
+        $this->delete($id_user);
+    }
+
+    /**
      * Mark a User activated (legacy activateUser()). Like CI3's update(),
      * true whenever the query runs — including when the id matches no row.
      */

@@ -219,4 +219,30 @@ Run method: same as the earlier tickets — both web containers on the
 `docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy web php vendor/bin/phpunit --no-coverage tests/Acceptance`
 (the oracle mapped to host port 8001 this round).
 
+## Comparison recorded 2026-10-26 (ticket #14)
 
+The settings surface — the profile page (`GET /setting`, plus the breadcrumb's
+capital-S `GET /Setting`), the profile update (`POST /setting/update/{id}`),
+the retype form (`GET /setting/password/{id}`) and its store
+(`POST /setting/setpassword/{id}`, lowercase as the legacy view spells it),
+and the deactivate / delete anchors (`GET /setting/deactivate/{id}`,
+`GET /setting/delete/{id}`) — asserted by the acceptance suite on both
+stacks (37/37 green on each, identical fixture):
+
+| Check on the oracle (:8001)                             | Result |
+| ------------------------------------------------------ | ------ |
+| Acceptance suite (all nine test files, incl. Setting)  | 37/37 green |
+| `GET /setting` page bytes (Jack logged in)             | byte-identical modulo CI4 toolbar markers and view-boundary newlines (the established noise classes) |
+| `GET /setting/password/2` page bytes (Jack logged in)  | byte-identical (same noise classes) |
+| `POST /setting/update/2`                               | 303 → `/setting`, no flash, row rewritten — identical |
+| `POST /setting/setpassword/2`                          | 303 → `/setting`, byte-identical flash; the new password logs in and the old one fails on both stacks |
+| `GET /setting/deactivate/2`                            | 307 → `/auth`, byte-identical flash, next login blocked with no flash (the unactivated fallthrough) |
+| `GET /setting/delete/{id}` (a throwaway User)          | 307 → `/auth`, byte-identical flash (no trailing period), User gone — "not registered" on the next login |
+| Anonymous `GET /setting`                               | 200 with the empty-form render on both stacks (index() reads only the session's id_user) |
+| `GET /setting` after logout                            | still renders the profile on both stacks — id_user survives the legacy unset_userdata list and index() gates nothing |
+| The writes (`update`/`setpassword`/`deactivate`/`delete`) | no session, no ownership on either stack — any caller acts on any User row (parity hole kept, post-migration backlog) |
+
+Run method: same as tickets #10–#12 — both web containers on the `parity`
+docker network, then
+`docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy web php vendor/bin/phpunit --no-coverage tests/Acceptance`.
+(The oracle mapped to host port 8001 this round.)
