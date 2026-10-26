@@ -45,15 +45,4 @@
 </div>
 <!-- /.content-wrapper -->
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#password, #password2').on('keyup', function () {
-            if ($('#password').val() == $('#password2').val()) {
-                $('#message').html('Same password').css('color', 'green');
-            }
-            else {
-                $('#message').html('Different password').css('color', 'red');
-            }
-        })
-    });
-</script>
+<script src="<?= base_url('assets/js/password-match.js'); ?>"></script>

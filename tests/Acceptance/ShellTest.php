@@ -39,6 +39,20 @@ final class ShellTest extends AcceptanceTestCase
         $this->assertStringNotContainsString('jquery', strtolower($page->body));
     }
 
+    public function testTheChangePasswordPageCarriesNoJquery(): void
+    {
+        $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
+        $setting = $this->http('GET', '/setting');
+        $this->assertSame(200, $setting->statusCode);
+        // The change-password link carries the user id this test needs.
+        $this->assertSame(1, preg_match('#setting/password/(\d+)#', $setting->body, $m));
+        $page = $this->http('GET', '/setting/password/' . $m[1]);
+        $this->assertSame(200, $page->statusCode);
+        $this->assertStringNotContainsString('jquery', strtolower($page->body));
+        $this->assertEveryReferencedAssetResolves($page->body);
+        $this->assertNoThirdPartyOrigin($page->body);
+    }
+
     public function testRegisterPageCarriesNoJquery(): void
     {
         $page = $this->http('GET', '/auth/register');
