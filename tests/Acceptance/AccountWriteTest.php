@@ -14,6 +14,9 @@ namespace Tests\Acceptance;
  * else branch in CI3), update and delete check nothing at all. The parity
  * holes stay until the post-migration fixes (spec #1).
  *
+ * One CI3 quirk is deliberately not ported: bare /account/delete 404s —
+ * the last test pins that divergence (issue #30).
+ *
  * The tests run in declaration order against the once-seeded database
  * (the runner re-seeds every full run): the add test's row feeds the edit
  * and delete tests, and the ungated test consumes rows nothing after it
@@ -222,5 +225,16 @@ final class AccountWriteTest extends AcceptanceTestCase
         $after = $this->http('GET', '/account');
         $this->assertSame(200, $after->statusCode);
         $this->assertStringNotContainsString('<h5 class="card-header"><i class="fab fa-steam mr-2"></i>Steam</h5>', $after->body);
+    }
+
+    public function testDeleteWithoutAnIdIsA404(): void
+    {
+        // CI3 auto-routing answered the bare URL with delete(null): the
+        // where matched no row, the flash still said "Delete account
+        // successfully.", and the list followed. The defined route requires
+        // the segment, so both verbs 404 — the deliberate divergence
+        // (issue #30) pinned here.
+        $this->assertSame(404, $this->http('GET', '/account/delete')->statusCode);
+        $this->assertSame(404, $this->http('POST', '/account/delete')->statusCode);
     }
 }
