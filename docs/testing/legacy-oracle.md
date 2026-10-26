@@ -190,4 +190,33 @@ container on rebuild, which drops its manual `parity` attachment — re-run
 `docker network connect parity password-management` before the next
 oracle comparison.)
 
+## Comparison recorded 2026-10-25 (ticket #13)
+
+User management + Access Level gating — the Users list
+(`GET /dashboard/users`) and User detail pages (`GET /dashboard/user/2`,
+`/3`, `/999`), plus the sidebar menu visibility per Access Level, asserted
+by the acceptance suite on both stacks (35/35 green on each, identical
+fixture):
+
+| Check on the oracle (:8001)                                   | Result |
+| ------------------------------------------------------------- | ------ |
+| Acceptance suite (all nine test files, incl. UserManagement) | 35/35 green |
+| `GET /dashboard/users` page bytes (Admin logged in)           | byte-identical modulo the established noise classes (CI4 toolbar markers, view-boundary newlines, whitespace) |
+| `GET /dashboard/user/2` page bytes (Admin logged in)          | byte-identical (same noise classes) |
+| Users list split (active / not active, Admin excluded)        | identical — Jack in User Active, Ghost in User Not Active, no Admin row, on both stacks |
+| Detail branch per `registered` (deactivate vs. activate btn)  | identical — Indonesian status lines and button hrefs byte-identical |
+| Menu visibility per Access Level                              | identical — level 1: USER shown, ACCOUNT hidden; level 2: the mirror |
+| `GET /dashboard/user/999` (no row)                            | 200 + empty name + activation branch on both stacks; the oracle's PHP 7.3 reads the missing row's fields as null silently — the port keeps the same observable render through null-coalescing guards (the ticket #11 precedent; the oracle's inline notices are its dev-mode artifact, not replicated) |
+
+This round's byte comparison caught one real divergence before it landed:
+the port's first draft of `user.php` dropped `content-wrapper`'s closing
+div — the legacy file's tail closes the div *before* the
+`/.container-fluid` comment that names it, an easy placement to miss. The
+port now reproduces each file's exact div and comment sequence.
+
+Run method: same as the earlier tickets — both web containers on the
+`parity` docker network, then
+`docker compose exec -e ACCEPTANCE_BASE_URL=http://password-management-legacy web php vendor/bin/phpunit --no-coverage tests/Acceptance`
+(the oracle mapped to host port 8001 this round).
+
 
