@@ -175,7 +175,7 @@ If the window aborts before the swap is declared:
 3. Bring the legacy app back: `git checkout pre-migration && docker compose
    up -d`. Compose reuses the legacy image already on the host — do not
    `--build` it; the legacy Dockerfile's `apt-get upgrade` layer no longer
-   resolves (see docs/testing/legacy-oracle.md).
+   resolves (Debian stretch is archived).
 
 Users log in again either way — sessions were dropped at step 1 of the
 window.

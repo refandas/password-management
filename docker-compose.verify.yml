@@ -9,8 +9,7 @@
 #   COMPOSE_PROJECT_NAME=cutover-verify ./scripts/run-acceptance.sh
 #
 # ports: !override replaces the base file's port mappings instead of
-# merging with them (the same pattern as the legacy oracle in
-# docs/testing/legacy-oracle.md) — plain merging would collide with the
+# merging with them — plain merging would collide with the
 # production stack on 8000/6036.
 services:
     web:

@@ -50,8 +50,10 @@ $ docker compose exec -e ACCEPTANCE_BASE_URL=http://localhost web \
 `--no-coverage`: the image ships no coverage driver and `phpunit.dist.xml`
 runs with `failOnWarning="true"`.
 
-Point the suite at a different stack with `ACCEPTANCE_BASE_URL` — that is how
-it also drives the [legacy oracle](legacy-oracle.md).
+Point the suite at a different stack with `ACCEPTANCE_BASE_URL` — during the
+migration that is how it drove the legacy oracle in the old-vs-new
+comparisons (retired with the sweep below; the per-ticket records live in
+git history).
 
 ## Fixture
 
@@ -74,8 +76,10 @@ exactly and every ciphertext and password hash round-trips.
 
 ### Legacy encryption format
 
-Vault Account credentials are seeded in the legacy CI3 format so the legacy
-oracle and the ported app read the same rows. The canonical spec is the
+Vault Account credentials are seeded in the legacy CI3 format — during the
+migration both the legacy oracle and the ported app read the same rows, and
+today the format is what gives the cutover proof real legacy-format rows to
+transform. The canonical spec is the
 header of `tests/tools/generate-seed.php` (ported verbatim from CI3 3.1.10's
 `system/libraries/Encryption.php`, OpenSSL driver, always selected on PHP
 7.3); in short:
@@ -87,9 +91,10 @@ payload  = base64(iv || aes-256-ctr(plaintext, enc_key, iv))
 stored   = hex(hmac_sha512(payload, auth_key)) || payload
 ```
 
-`key` is the raw 32 bytes of `hex2bin(account.key_str)`. The format is proven
-against real CI3 code, not just this port: the oracle's detail page decrypts
-the seeded rows to the plaintexts (see legacy-oracle.md). The ported app
+`key` is the raw 32 bytes of `hex2bin(account.key_str)`. The format was
+proven against real CI3 code during the migration, not just this port: the
+legacy oracle's detail page decrypted the seeded rows to the plaintexts
+(per-ticket comparison records in git history). The ported app
 reads the same format through `app/Libraries/LegacyEncryption.php` (ticket
 #11) — the acceptance suite proves the two implementations agree on every
 run, since the app must decrypt exactly what the generator encrypts.
@@ -130,8 +135,8 @@ framework migration CLI (`spark migrate:status`), the successor of the
 legacy CLI migration tool — the suite's other CLI-seam check. The CLI
 helper (`AcceptanceTestCase::spark()`) always runs this checkout's
 framework CLI against its own database, whatever `ACCEPTANCE_BASE_URL`
-points the HTTP requests at, so both files are safe in an oracle
-comparison.
+points the HTTP requests at — the property that kept the CLI-seam files
+safe back when the suite was pointed at the legacy oracle.
 
 The maintenance window itself — final data sync, the command, the full
 suite in an isolated stack, the swap — is the
@@ -155,3 +160,34 @@ All configuration comes from the framework's environment file: the committed
 it to `.env` at build. `app/Config/Database.php` contains placeholders only —
 `database.default.*` in `.env` supplies hostname, database, username,
 password, and driver, applied by CI4's config-to-env binding.
+
+## Parity sweep 2026-10-26 (ticket #16)
+
+The migration's finish line: the suite green on both stacks, old vs new, on
+the final build. The legacy oracle — the pre-migration app, CI3 3.1.10 on
+PHP 7.3, run from the `pre-migration` branch — received the identical seeded
+fixture and the identical requests one last time:
+
+| Stack                                        | Result                       |
+| -------------------------------------------- | ---------------------------- |
+| New — CI4 4.7 on PHP 8.5.12 (final build)    | 47/47 green, 422 assertions  |
+| Legacy oracle — CI3 3.1.10 on PHP 7.3        | 44/44 green, 358 assertions  |
+
+The oracle leg is the full suite minus `VaultReencryptionTest`: the cutover
+command has no legacy counterpart, and its two legs (the spark CLI against
+this stack's own database, the HTTP detail pages against
+`ACCEPTANCE_BASE_URL`) target two stacks by design — it is proven on the new
+stack in every run, and its "before" state, legacy-format rows rendered by
+real CI3 code, is exactly what the oracle leg asserted. Byte spot-checks:
+the login page byte-identical after stripping the CI4 debug-toolbar markup;
+the account list and a detail page identical modulo that markup and the
+view-boundary newlines (the established noise classes) — both stacks
+rendering the same seed plaintext from the same legacy-format row, and the
+login POST answering the identical `303 → http://localhost:8000/dashboard`
+on both.
+
+With the sweep recorded, the oracle tooling left the branch (ticket #16):
+`tests/oracle/` and `docs/testing/legacy-oracle.md` are gone — the
+per-ticket comparison records (#8–#15) live in git history — and the
+`pre-migration` branch itself remains only until the runbook's rollback
+window closes.
