@@ -1,4 +1,6 @@
 # Cutover runbook
+> Part of a personal learning project — see README. Single-user, self-hosted; not production-grade.
+
 
 The maintenance window that swaps the running stack from the legacy CI3 app
 (`pre-migration` branch) to the ported CI4 app, re-encrypting every Vault
