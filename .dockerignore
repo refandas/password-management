@@ -1,0 +1,9 @@
+.git
+.idea
+vendor
+docs
+CLAUDE.md
+GLOSSARY.md
+README.md
+docker-compose.yml
+.env
