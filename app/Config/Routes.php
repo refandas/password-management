@@ -34,3 +34,15 @@ $routes->match(['get', 'post'], 'account/add_account', 'Account::addAccount');
 $routes->match(['get', 'post'], 'account/add', 'Account::add');
 $routes->match(['get', 'post'], 'account/update/(:segment)', 'Account::update/$1');
 $routes->match(['get', 'post'], 'account/delete/(:segment)', 'Account::delete/$1');
+
+// The settings pages (ticket #14) — `setting` is the sidebar's href.
+// `Setting` is the change-password page's breadcrumb spelling: CI3 matched
+// controller names case-insensitively (ucfirst), so both spellings served;
+// CI4 matches exactly, so the alias is registered.
+$routes->get('setting', 'Setting::index');
+$routes->get('Setting', 'Setting::index');
+$routes->match(['get', 'post'], 'setting/update/(:segment)', 'Setting::update/$1');
+$routes->get('setting/password/(:segment)', 'Setting::password/$1');
+$routes->match(['get', 'post'], 'setting/setpassword/(:segment)', 'Setting::setPassword/$1');
+$routes->match(['get', 'post'], 'setting/deactivate/(:segment)', 'Setting::deactivate/$1');
+$routes->match(['get', 'post'], 'setting/delete/(:segment)', 'Setting::delete/$1');
