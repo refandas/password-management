@@ -156,7 +156,9 @@ afterwards.
 
 The window closes; users log in again with their existing credentials.
 Keep the dump and the legacy branch checked out for the rollback window
-(one week is a sane default), then retire them (ticket #16).
+(one week is a sane default), then retire them. Ticket #16 retired the
+in-repo oracle tooling at cutover time; the branch and the dump are the
+owner's to delete once the window closes.
 
 ## Rollback
 
@@ -175,7 +177,7 @@ If the window aborts before the swap is declared:
 3. Bring the legacy app back: `git checkout pre-migration && docker compose
    up -d`. Compose reuses the legacy image already on the host — do not
    `--build` it; the legacy Dockerfile's `apt-get upgrade` layer no longer
-   resolves (see docs/testing/legacy-oracle.md).
+   resolves (Debian stretch is archived).
 
 Users log in again either way — sessions were dropped at step 1 of the
 window.
