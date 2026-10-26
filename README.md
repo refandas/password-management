@@ -32,6 +32,7 @@ seeded database — see [docs/testing/acceptance-suite.md](docs/testing/acceptan
 
 - `docs/adr/` — migration decisions (PHP 8.5.12, parity-first port,
   per-account key retention)
+- `docs/cutover-runbook.md` — the maintenance-window cutover, step by step
 - `docs/research/` — compatibility research feeding the spec
 - `docs/testing/` — acceptance suite and legacy oracle
 - `GLOSSARY.md` — domain terms (User, Vault Account, Media Type, Access Level)

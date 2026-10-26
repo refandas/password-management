@@ -1,0 +1,23 @@
+# The isolated verification stack (docs/cutover-runbook.md).
+#
+# The acceptance suite reseeds its database on every run, so it must never
+# run against the production database. This override renames and remaps
+# both containers, letting a full verification run coexist with the
+# production stack on the same host:
+#
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.verify.yml \
+#   COMPOSE_PROJECT_NAME=cutover-verify ./scripts/run-acceptance.sh
+#
+# ports: !override replaces the base file's port mappings instead of
+# merging with them (the same pattern as the legacy oracle in
+# docs/testing/legacy-oracle.md) — plain merging would collide with the
+# production stack on 8000/6036.
+services:
+    web:
+        container_name: password-management-verify
+        ports: !override
+            - 8002:80
+    db:
+        container_name: pass-manag-db-verify
+        ports: !override
+            - 6038:3306
