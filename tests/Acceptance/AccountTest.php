@@ -32,20 +32,20 @@ final class AccountTest extends AcceptanceTestCase
         // One card per Vault Account: Media Type icon and name from the
         // join, username/email and password decrypted on the list — the
         // legacy getAccountByUserID() decrypted every row it listed.
-        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-instagram mr-2"></i>Instagram</h5>', $list->body);
-        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-twitter mr-2"></i>Twitter</h5>', $list->body);
-        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-amazon mr-2"></i>Amazon</h5>', $list->body);
-        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-steam mr-2"></i>Steam</h5>', $list->body);
+        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-instagram me-2"></i>Instagram</h5>', $list->body);
+        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-twitter me-2"></i>Twitter</h5>', $list->body);
+        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-amazon me-2"></i>Amazon</h5>', $list->body);
+        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-steam me-2"></i>Steam</h5>', $list->body);
 
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>jack.sparrow@seamail.example</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>jackdraws</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>jack@amazon.example</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>steamjack</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>jack.sparrow@seamail.example</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>jackdraws</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>jack@amazon.example</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>steamjack</label>', $list->body);
 
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>insta-pass-0123</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>tweet-pass-3f2a</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>amaz0n-pr1me-K7</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>p2L!ay-L4ter</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>insta-pass-0123</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>tweet-pass-3f2a</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>amaz0n-pr1me-K7</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>p2L!ay-L4ter</label>', $list->body);
 
         // The detail link rides on each card.
         $this->assertStringContainsString('<a href="http://localhost:8000/account/detail_account/1" class="btn btn-outline-dark">Action</a>', $list->body);

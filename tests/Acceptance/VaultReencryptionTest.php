@@ -136,8 +136,8 @@ final class VaultReencryptionTest extends AcceptanceTestCase
         $list = $this->http('GET', '/account');
         $this->assertSame(200, $list->statusCode);
         $this->assertStringContainsString('<title>Account</title>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>jackdraws</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>tweet-pass-3f2a</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>jackdraws</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>tweet-pass-3f2a</label>', $list->body);
     }
 
     /**
