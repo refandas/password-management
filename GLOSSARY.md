@@ -19,3 +19,11 @@ _Avoid_: media, account media, site
 **Access Level**:
 A User attribute gating which menus and management features they can reach.
 _Avoid_: role, permission
+
+**Framework upgrade**:
+A move of the app to newer PHP and CodeIgniter versions — one of this project's two learning goals.
+_Avoid_: migration (say re-encryption cutover for the data-side move; historically both were called "migration")
+
+**Re-encryption cutover**:
+The one-time move of every Vault Account's stored credential from the legacy encryption scheme to the current one.
+_Avoid_: migration (on its own), rekey, conversion

@@ -3,6 +3,14 @@
 A self-hosted password manager: Users store Vault Accounts (credentials for
 other services) encrypted at rest, organized by Media Type.
 
+> **Educational project** — a personal, self-hosted password manager that
+> doubles as a learning project: built to practice applied cryptography and
+> to experiment with porting a legacy CodeIgniter 3 / PHP 7.3 app to current
+> versions (essentially complete — details below). It is **not audited or
+> hardened for production use**, and implementation choices favor
+> instruction over hardening; it serves a single user and remains a personal
+> sandbox.
+
 CodeIgniter 4.7 on PHP 8.5.12 (spec #1) — ported 1:1 from the CI3/PHP 7.3
 app: identical URLs, behavior, and UI strings, verified green old-vs-new by
 the acceptance suite on every migration ticket. The maintenance-window
