@@ -52,7 +52,7 @@ runs with `failOnWarning="true"`.
 
 Point the suite at a different stack with `ACCEPTANCE_BASE_URL` — during the
 migration that is how it drove the legacy oracle in the old-vs-new
-comparisons (retired with the sweep below; the per-ticket records live in
+comparisons (retired with the sweep below; the comparison records live in
 git history).
 
 ## Fixture
@@ -188,6 +188,8 @@ on both.
 
 With the sweep recorded, the oracle tooling left the branch (ticket #16):
 `tests/oracle/` and `docs/testing/legacy-oracle.md` are gone — the
-per-ticket comparison records (#8–#15) live in git history — and the
+comparison records from every oracle round live in git history — and the
 `pre-migration` branch itself remains only until the runbook's rollback
-window closes.
+window closes. The full run evidence — commands, outputs, the
+byte-comparison method — is
+[PR #25](https://github.com/refandas/password-management/pull/25).

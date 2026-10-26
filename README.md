@@ -4,11 +4,11 @@ A self-hosted password manager: Users store Vault Accounts (credentials for
 other services) encrypted at rest, organized by Media Type.
 
 CodeIgniter 4.7 on PHP 8.5.12 (spec #1) — ported 1:1 from the CI3/PHP 7.3
-app: every URL, behavior, and UI string is the legacy app's, proven green
-old-vs-new by the acceptance suite on every migration ticket and cut over
-2026-10-26 ([docs/cutover-runbook.md](docs/cutover-runbook.md)). Known
-weaknesses are deliberately deferred to the post-migration backlog
-(issues #2–#7).
+app: identical URLs, behavior, and UI strings, verified green old-vs-new by
+the acceptance suite on every migration ticket. The maintenance-window
+cutover — its steps, evidence, and rollback — is
+[docs/cutover-runbook.md](docs/cutover-runbook.md). Known weaknesses are
+deliberately deferred to the post-migration backlog (issues #2–#7).
 
 ## Build & run
 

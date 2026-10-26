@@ -156,7 +156,9 @@ afterwards.
 
 The window closes; users log in again with their existing credentials.
 Keep the dump and the legacy branch checked out for the rollback window
-(one week is a sane default), then retire them (ticket #16).
+(one week is a sane default), then retire them. Ticket #16 retired the
+in-repo oracle tooling at cutover time; the branch and the dump are the
+owner's to delete once the window closes.
 
 ## Rollback
 
