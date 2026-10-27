@@ -75,3 +75,9 @@ body {
     text-align: center;
     width: 1.25rem;
 }
+
+/* Auth pages: one centered card, fixed readable width. */
+.auth-card {
+    max-width: 24rem;
+    width: 100%;
+}
