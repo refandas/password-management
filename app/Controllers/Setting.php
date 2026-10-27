@@ -47,34 +47,50 @@ class Setting extends BaseController
     }
 
     /**
-     * Show the retype-password form (legacy password()). Ported without a
-     * gate, exactly as in CI3: the id comes from the URL, so the page
-     * renders for any caller — the no-row case rendering the empty heading
-     * and action through the view's null-coalescing guards (the detail
+     * Show the retype-password form (legacy password()). Post-migration
+     * fix (#34): the id must be the session User's own — any other id
+     * (or a caller with no session id_user) bounces to the settings page
+     * with the red ownership flash, so no caller reads another User's
+     * form. The own-id no-row case still renders the empty heading and
+     * action through the view's null-coalescing guards (the detail
      * page's no-row render, same class).
      */
-    public function password($id_user = null): string
+    public function password($id_user = null): string|RedirectResponse
     {
+        if ((string) $id_user !== (string) session('id_user')) {
+            session()->setFlashdata('success', '<div style="color: #a71d2a">You can only change your own password.</div>');
+            return $this->legacyRedirect('setting');
+        }
         $user = model(UserModel::class)->findUserByID($id_user);
-
         return $this->layoutPage('setting/change_password', 'Change Password', ['user' => $user]);
     }
 
     /**
      * Store the new password (legacy setPassword()) — the retype form's
      * action, spelled lowercase as the legacy view wrote it (CI3 method
-     * names were case-insensitive, so the spelling served). The second
-     * field, password_check, is client-side only — the legacy controller
-     * never read it. Flashes the same success string as the auth reset,
-     * ungated and unchecked like CI3: any caller resets any User's
-     * password, and the flash fires even when the id matches no row.
+     * names were case-insensitive, so the spelling served).
+     * Post-migration fix (#34): the id must be the session User's own —
+     * any other id (or a caller with no session id_user) bounces to the
+     * settings page with the red ownership flash, and nothing is
+     * written. #34 also moves the retype match server-side: password_check
+     * is read, and a mismatch bounces with the red flash before any write.
+     * Flashes the same success string as the auth reset; the flash fires
+     * even when the id matches no row.
      */
     public function setPassword($id_user = null): RedirectResponse
     {
-        model(UserModel::class)->setPassword((string) $this->request->getPost('password'), $id_user);
-
+        if ((string) $id_user !== (string) session('id_user')) {
+            session()->setFlashdata('success', '<div style="color: #a71d2a">You can only change your own password.</div>');
+            return $this->legacyRedirect('setting');
+        }
+        $password = (string) $this->request->getPost('password');
+        $retype   = (string) $this->request->getPost('password_check');
+        if ($password !== $retype) {
+            session()->setFlashdata('success', '<div style="color: #a71d2a">Passwords do not match!</div>');
+            return $this->legacyRedirect('setting');
+        }
+        model(UserModel::class)->setPassword($password, $id_user);
         session()->setFlashdata('success', '<div style="color: #00c054">Reset password success.</div>');
-
         return $this->legacyRedirect('setting');
     }
 
