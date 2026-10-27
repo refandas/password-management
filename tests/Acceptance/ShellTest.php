@@ -33,7 +33,7 @@ final class ShellTest extends AcceptanceTestCase
         // The Bootstrap 5 offcanvas sidebar renders — the owner-kept
         // layout decision of #32.
         $this->assertStringContainsString('id="appSidebar"', $page->body);
-        $this->assertStringContainsString('data-bs-toggle="offcanvas"', $page->body);
+        $this->assertStringContainsString('data-bs-target="#appSidebar"', $page->body);
         $this->assertEveryReferencedAssetResolves($page->body);
         $this->assertNoThirdPartyOrigin($page->body);
         $this->assertStringNotContainsString('jquery', strtolower($page->body));

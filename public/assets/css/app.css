@@ -25,13 +25,36 @@ body {
     width: 260px !important;
 }
 
+/* Reboot leaves the drawer title body-colored — dark on the dark rail. */
+.app-sidebar .offcanvas-title {
+    color: #fff;
+}
+
+/* Icon + label on one baseline: reboot's <p> bottom margin shoves the
+   label off the icon's line. */
 .app-sidebar .nav-link {
+    align-items: center;
     color: rgba(255, 255, 255, 0.8);
+    display: flex;
+}
+
+.app-sidebar .nav-link p {
+    margin-bottom: 0;
 }
 
 .app-sidebar .nav-link:hover,
 .app-sidebar .nav-link:focus {
     color: #fff;
+}
+
+/* Floating rail: inset from the navbar above and the footer below, with
+   a rounded edge and a soft shadow. Below lg the drawer stays full-bleed. */
+@media (min-width: 992px) {
+    .app-sidebar {
+        border-radius: 0.5rem;
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+        margin: 0.75rem 0.75rem 0.75rem 0;
+    }
 }
 
 /* Views open their own .content-wrapper; it is the content column. */
