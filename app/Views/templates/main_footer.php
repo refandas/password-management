@@ -1,10 +1,9 @@
-<!-- Main Footer -->
-<footer class="main-footer">
-    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-        <b>Version</b> 3.0.0-rc.5
+<!-- Closes the shell row opened in navbar.php; the footer sits below the row. -->
+</div>
+<!-- /.app-shell -->
+<footer class="app-footer">
+    <div class="container-fluid">
+        <span>Copyright &copy; <?= date('Y'); ?> Password Management</span>
+        <span class="float-end d-none d-sm-inline"><b>Version</b> CI4</span>
     </div>
 </footer>
-</div>
-<!-- ./wrapper -->

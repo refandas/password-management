@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 offset-6">
-                    <ol class="breadcrumb float-sm-right">
+                    <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="<?php echo base_url('dashboard'); ?>">Home</a></li>
                         <li class="breadcrumb-item active">Account</li>
                     </ol>
@@ -31,10 +31,10 @@
                         <?php foreach ($accounts as $account) : ?>
                         <div class="col-sm-4">
                             <div class="card">
-                                <h5 class="card-header"><i class="<?= $account['logo']; ?> mr-2"></i><?= $account['name']; ?></h5>
+                                <h5 class="card-header"><i class="<?= $account['logo']; ?> me-2"></i><?= $account['name']; ?></h5>
                                 <div class="card-body">
-                                    <label><i class="fas fa-user mr-2"></i><?= $account['username_email']; ?></label><br>
-                                    <label><i class="fas fa-unlock-alt mr-2"></i><?= $account['password']; ?></label><br>
+                                    <label><i class="fas fa-user me-2"></i><?= $account['username_email']; ?></label><br>
+                                    <label><i class="fas fa-unlock-alt me-2"></i><?= $account['password']; ?></label><br>
                                     <a href="<?= base_url('account/detail_account/') . $account['id_account']; ?>" class="btn btn-outline-dark">Action</a>
                                 </div>
                             </div>
@@ -52,9 +52,3 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
-<!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-</aside>
-<!-- /.control-sidebar -->

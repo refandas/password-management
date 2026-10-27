@@ -1,0 +1,77 @@
+/*
+ * Shell styling for the Bootstrap 5 port (#32, ADR-0005).
+ * Bootstrap itself is vendored untouched; what the shell adds lives here.
+ */
+
+/* Navbar on top, below it a flex row of sidebar + content. */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-shell {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* The sidebar: a dark rail at lg+, an offcanvas drawer below it. The
+   background and width need !important: Bootstrap .offcanvas-lg sets
+   transparent bg + auto width with !important at lg+. */
+.app-sidebar {
+    --bs-offcanvas-width: 260px;
+    background-color: #343a40 !important;
+    width: 260px !important;
+}
+
+/* Reboot leaves the drawer title body-colored — dark on the dark rail. */
+.app-sidebar .offcanvas-title {
+    color: #fff;
+}
+
+/* Icon + label on one baseline: reboot's <p> bottom margin shoves the
+   label off the icon's line. */
+.app-sidebar .nav-link {
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+}
+
+.app-sidebar .nav-link p {
+    margin-bottom: 0;
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link:focus {
+    color: #fff;
+}
+
+
+/* Views open their own .content-wrapper; it is the content column. */
+.content-wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 1rem;
+}
+
+/* Legacy auth pages center one card in the viewport. */
+.vertical-center {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+/* Font Awesome glyphs sit high in their em box; pin the icon box so
+   icon and label share one visual line, side by side. */
+.app-sidebar .nav-link i {
+    line-height: 1;
+    text-align: center;
+    width: 1.25rem;
+}

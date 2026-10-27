@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 offset-6">
-                    <ol class="breadcrumb float-sm-right">
+                    <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="<?php echo base_url('dashboard'); ?>">Home</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo base_url('Setting'); ?>">Setting</a></li>
                         <li class="breadcrumb-item active">Change Password</li>
@@ -19,25 +19,33 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <div>
-                <form action="<?= base_url('setting/setpassword/') . ($user['id_user'] ?? ''); ?>" method="POST" id="login" class="mx-auto p-5">
-                    <h5 class="mb-3">Reset Password for <b><?= $user['name'] ?? ''; ?></b></h5>
-                    <div class="form-group">
-                        <label>New Password</label>
-                        <input class="form-control col-md-5" type="password" placeholder="password" name="password" id="password">
-                    </div>
-                    <div class="form-group">
-                        <label>Re-type Password</label>
-                        <input class="form-control col-md-5" type="password" placeholder="password" name="password_check" id="password2">
-                    </div>
-                    <div class="form-group">
-                        <span id="message"></span>
-                    </div>
-                    <div class="form-group"><button class="btn btn-dark" type="submit">Set Password</button></div>
-                </form>
-                <!-- /.card -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Reset Password for <b><?= $user['name'] ?? ''; ?></b></h5>
+                </div>
+                <div class="card-body">
+                    <form action="<?= base_url('setting/setpassword/') . ($user['id_user'] ?? ''); ?>" method="POST" id="login" class="p-4">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">New Password</label>
+                                <input class="form-control" type="password" placeholder="password" name="password" id="password" autocomplete="new-password">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="password2" class="form-label">Re-type Password</label>
+                                <input class="form-control" type="password" placeholder="password" name="password_check" id="password2" autocomplete="new-password">
+                            </div>
+                        </div>
+                        <div class="mb-3" aria-live="polite">
+                            <span id="message" class="fw-bold"></span>
+                        </div>
+                        <button class="btn btn-dark" type="submit">Set Password</button>
+                    </form>
+                </div>
+                <!-- /.card-body -->
             </div>
-            <!-- /.row -->
+            <!-- /.card -->
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -45,21 +53,4 @@
 </div>
 <!-- /.content-wrapper -->
 
-<!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-</aside>
-<!-- /.control-sidebar -->
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#password, #password2').on('keyup', function () {
-            if ($('#password').val() == $('#password2').val()) {
-                $('#message').html('Same password').css('color', 'green');
-            }
-            else {
-                $('#message').html('Different password').css('color', 'red');
-            }
-        })
-    });
-</script>
+<script src="<?= base_url('assets/js/password-match.js'); ?>"></script>
