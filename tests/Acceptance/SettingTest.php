@@ -12,7 +12,9 @@ namespace Tests\Acceptance;
  * The legacy Setting controller gates nothing: index() reads only the
  * session's id_user (never is_logged), and the write methods check no
  * session and no ownership — any caller edits, disables, or deletes any
- * User row. The parity holes are kept until the post-migration fixes
+ * User row. The password endpoints are the exception — ownership-gated
+ * post-migration (#34), with the retype match read server-side too. The
+ * remaining parity holes are kept until the post-migration fixes
  * (spec #1), pinned by the ungated test below.
  *
  * The tests run in declaration order against the once-seeded database
@@ -92,8 +94,8 @@ final class SettingTest extends AcceptanceTestCase
         $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
 
         // The Change Password anchor opens the retype form — password plus
-        // password_check; the match is client-side vanilla JS only, the legacy
-        // controller never read the second field.
+        // password_check; the match is client-side vanilla JS, and #34
+        // reads the second field server-side too.
         $form = $this->http('GET', '/setting/password/2');
         $this->assertSame(200, $form->statusCode);
         $this->assertStringContainsString('<title>Change Password</title>', $form->body);
@@ -158,6 +160,73 @@ final class SettingTest extends AcceptanceTestCase
         $this->http('POST', '/setting/setpassword/2', ['password' => 'user1234', 'password_check' => 'user1234']);
         $restored = $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
         $this->assertSame('http://localhost:8000/dashboard', $restored->location());
+    }
+
+    public function testTheChangePasswordFormOnlyRendersForTheSessionUsersOwnId(): void
+    {
+        // #34: the retype form is ownership-gated — the URL id must be
+        // the session User's own. An anonymous caller carries no session
+        // id_user, so they are bounced to the settings page (a GET
+        // redirect: 307)…
+        $anonymous = $this->http('GET', '/setting/password/2');
+        $this->assertSame(307, $anonymous->statusCode);
+        $this->assertSame('http://localhost:8000/setting', $anonymous->location());
+        // …and a logged-in User gets no other User's form: Jack (id 2)
+        // asks for Admin's (id 1) — bounced the same way, with the
+        // ownership flash keyed red like the legacy error strings.
+        $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
+        $forged = $this->http('GET', '/setting/password/1');
+        $this->assertSame(307, $forged->statusCode);
+        $this->assertSame('http://localhost:8000/setting', $forged->location());
+        $page = $this->http('GET', '/setting');
+        $this->assertStringContainsString('<div style="color: #a71d2a">You can only change your own password.</div>', $page->body);
+        // The session User's own id still renders the form.
+        $own = $this->http('GET', '/setting/password/2');
+        $this->assertSame(200, $own->statusCode);
+        $this->assertStringContainsString('<h5 class="mb-0">Reset Password for <b>Jack</b></h5>', $own->body);
+    }
+
+    public function testSettingAnotherUsersPasswordIsRefusedAndWritesNothing(): void
+    {
+        // #34: the form's action is ownership-gated the same way — Jack
+        // (id 2) posts Admin's (id 1) id, and the POST is refused:
+        // Post/Redirect/Get to the settings page with the ownership
+        // flash, and no row is written.
+        $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
+        $forged = $this->http('POST', '/setting/setpassword/1', [
+            'password'       => 'mutiny-on-the-bounty',
+            'password_check' => 'mutiny-on-the-bounty',
+        ]);
+        $this->assertSame(303, $forged->statusCode);
+        $this->assertSame('http://localhost:8000/setting', $forged->location());
+        $page = $this->http('GET', '/setting');
+        $this->assertStringContainsString('<div style="color: #a71d2a">You can only change your own password.</div>', $page->body);
+        // No write: Admin's seed password still logs them in — the
+        // forged one would have replaced it.
+        $this->http('GET', '/dashboard/logout');
+        $admin = $this->http('POST', '/auth/login', ['email' => 'admin@email.com', 'password' => 'admin1234']);
+        $this->assertSame(303, $admin->statusCode);
+        $this->assertSame('http://localhost:8000/dashboard', $admin->location());
+    }
+
+    public function testAMismatchedRetypeIsRejectedWithoutWriting(): void
+    {
+        // #34: the retype match is no longer client-side only — the
+        // server reads password_check too. A mismatch is refused with
+        // the red flash, and nothing is written: Jack's seed password
+        // still logs them in afterwards.
+        $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
+        $mismatch = $this->http('POST', '/setting/setpassword/2', [
+            'password'       => 'the-trusted-helm',
+            'password_check' => 'not-the-trusted-helm',
+        ]);
+        $this->assertSame(303, $mismatch->statusCode);
+        $this->assertSame('http://localhost:8000/setting', $mismatch->location());
+        $page = $this->http('GET', '/setting');
+        $this->assertStringContainsString('<div style="color: #a71d2a">Passwords do not match!</div>', $page->body);
+        $this->http('GET', '/dashboard/logout');
+        $old = $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
+        $this->assertSame('http://localhost:8000/dashboard', $old->location());
     }
 
     public function testDeactivatingYourOwnUserBlocksTheNextLogin(): void
@@ -237,8 +306,8 @@ final class SettingTest extends AcceptanceTestCase
         // index() reads only the session's id_user — never is_logged — so
         // an anonymous visitor gets the page too: the empty-form render
         // (the null-User render, the detail page's no-row case, same
-        // class). The retype form is ungated the same way: any caller
-        // gets any User's page.
+        // class). The retype form is the exception — ownership-gated (#34):
+        // an anonymous caller is bounced to the settings page, never the form.
         $page = $this->http('GET', '/setting');
         $this->assertSame(200, $page->statusCode);
         $this->assertStringContainsString('<title>Setting</title>', $page->body);
@@ -247,8 +316,8 @@ final class SettingTest extends AcceptanceTestCase
         $this->assertStringContainsString('<input type="email" value="" class="form-control" name="email">', $page->body);
 
         $form = $this->http('GET', '/setting/password/2');
-        $this->assertSame(200, $form->statusCode);
-        $this->assertStringContainsString('<h5 class="mb-0">Reset Password for <b>Jack</b></h5>', $form->body);
+        $this->assertSame(307, $form->statusCode);
+        $this->assertSame('http://localhost:8000/setting', $form->location());
 
         // The write methods check no session at all: an anonymous POST
         // rewrites any User row — Jack's profile here, with no flash.
