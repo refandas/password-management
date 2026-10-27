@@ -20,6 +20,10 @@ _Avoid_: media, account media, site
 A User attribute gating which menus and management features they can reach.
 _Avoid_: role, permission
 
+**Reset Token**:
+The single-use capability the forgot-password flow emails to a User: an id, an expiry, and an HMAC signature over the User's current password hash. It authorizes exactly one set-password write; any password write retires it.
+_Avoid_: reset code, magic link, reset link (the emailed link carries the token; the token is the capability)
+
 **Framework upgrade**:
 A move of the app to newer PHP and CodeIgniter versions — one of this project's two learning goals.
 _Avoid_: migration (say re-encryption cutover for the data-side move; historically both were called "migration")

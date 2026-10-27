@@ -4,7 +4,7 @@
             <h5 class="mb-0">Reset Password for <b><?= $user['name']; ?></b></h5>
         </div>
         <div class="card-body">
-            <form action="<?= base_url('auth/setpassword/') . $user['id_user']; ?>" method="POST" id="login" class="p-2">
+            <form action="<?= base_url('auth/setpassword/') . ($token ?? ''); ?>" method="POST" id="login" class="p-2">
                 <div class="mb-3">
                     <label for="password" class="form-label">New Password</label>
                     <input class="form-control" type="password" placeholder="password" name="password" id="password" autocomplete="new-password">
