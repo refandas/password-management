@@ -67,3 +67,11 @@ body {
     padding: 0.75rem 1rem;
     border-top: 1px solid var(--bs-border-color);
 }
+
+/* Font Awesome glyphs sit high in their em box; pin the icon box so
+   icon and label share one visual line, side by side. */
+.app-sidebar .nav-link i {
+    line-height: 1;
+    text-align: center;
+    width: 1.25rem;
+}
