@@ -16,11 +16,13 @@ body {
     min-height: 0;
 }
 
-/* The sidebar: a dark rail at lg+, an offcanvas drawer below it. */
+/* The sidebar: a dark rail at lg+, an offcanvas drawer below it. The
+   background and width need !important: Bootstrap .offcanvas-lg sets
+   transparent bg + auto width with !important at lg+. */
 .app-sidebar {
     --bs-offcanvas-width: 260px;
-    background-color: #343a40;
-    width: 260px;
+    background-color: #343a40 !important;
+    width: 260px !important;
 }
 
 .app-sidebar .nav-link {
