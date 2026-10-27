@@ -92,13 +92,13 @@ final class SettingTest extends AcceptanceTestCase
         $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
 
         // The Change Password anchor opens the retype form — password plus
-        // password_check; the match is client-side jQuery only, the legacy
+        // password_check; the match is client-side vanilla JS only, the legacy
         // controller never read the second field.
         $form = $this->http('GET', '/setting/password/2');
         $this->assertSame(200, $form->statusCode);
         $this->assertStringContainsString('<title>Change Password</title>', $form->body);
-        $this->assertStringContainsString('<h5 class="mb-3">Reset Password for <b>Jack</b></h5>', $form->body);
-        $this->assertStringContainsString('<form action="http://localhost:8000/setting/setpassword/2" method="POST" id="login" class="mx-auto p-5">', $form->body);
+        $this->assertStringContainsString('<h5 class="mb-0">Reset Password for <b>Jack</b></h5>', $form->body);
+        $this->assertStringContainsString('<form action="http://localhost:8000/setting/setpassword/2" method="POST" id="login" class="p-4">', $form->body);
         $this->assertStringContainsString('name="password" id="password"', $form->body);
         $this->assertStringContainsString('name="password_check" id="password2"', $form->body);
 
@@ -248,7 +248,7 @@ final class SettingTest extends AcceptanceTestCase
 
         $form = $this->http('GET', '/setting/password/2');
         $this->assertSame(200, $form->statusCode);
-        $this->assertStringContainsString('<h5 class="mb-3">Reset Password for <b>Jack</b></h5>', $form->body);
+        $this->assertStringContainsString('<h5 class="mb-0">Reset Password for <b>Jack</b></h5>', $form->body);
 
         // The write methods check no session at all: an anonymous POST
         // rewrites any User row — Jack's profile here, with no flash.
