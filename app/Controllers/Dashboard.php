@@ -18,7 +18,7 @@ class Dashboard extends BaseController
     public function index(): string|RedirectResponse
     {
         if (session('is_logged') == 1) {
-            return $this->page('dashboard/index', 'Dashboard');
+            return $this->layoutPage('dashboard/index', 'Dashboard');
         }
 
         return $this->legacyRedirect('auth');
