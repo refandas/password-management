@@ -7,7 +7,7 @@ namespace Tests\Acceptance;
 /**
  * Admin activate/deactivate parity (ticket #10): the GET anchors on the User
  * detail page — auth/activateuser/{id} and auth/deactivateuser/{id} — flip
- * `registered`, flash the legacy Indonesian messages, and redirect to
+ * `registered`, flash the legacy messages, and redirect to
  * dashboard/users where the flash renders.
  *
  * The legacy controller gates nothing on these endpoints: no session, no
@@ -28,7 +28,7 @@ final class ActivationTest extends AcceptanceTestCase
 
         $users = $this->http('GET', '/dashboard/users');
         $this->assertSame(200, $users->statusCode);
-        $this->assertStringContainsString('<div style="color: #00c054">Aktivasi akun berhasil</div>', $users->body);
+        $this->assertStringContainsString('<div style="color: #00c054">User activated successfully.</div>', $users->body);
 
         // The toggle is real: Ghost (registered = 0 in the seed) logs in.
         $this->http('GET', '/dashboard/logout');
@@ -44,7 +44,7 @@ final class ActivationTest extends AcceptanceTestCase
         $this->http('POST', '/auth/login', ['email' => 'admin@email.com', 'password' => 'admin1234']);
         $this->http('GET', '/auth/deactivateuser/3');
         $restored = $this->http('GET', '/dashboard/users');
-        $this->assertStringContainsString('<div style="color: #00c054">Deaktivasi akun berhasil</div>', $restored->body);
+        $this->assertStringContainsString('<div style="color: #00c054">User deactivated successfully.</div>', $restored->body);
     }
 
     public function testAnAdminDeactivatingAUserFlashesAndBlocksLogin(): void
@@ -57,7 +57,7 @@ final class ActivationTest extends AcceptanceTestCase
 
         $users = $this->http('GET', '/dashboard/users');
         $this->assertSame(200, $users->statusCode);
-        $this->assertStringContainsString('<div style="color: #00c054">Deaktivasi akun berhasil</div>', $users->body);
+        $this->assertStringContainsString('<div style="color: #00c054">User deactivated successfully.</div>', $users->body);
 
         // The toggle is real: Jack's correct password now falls through the
         // unactivated branch — redirected, no flash at all.
