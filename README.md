@@ -28,10 +28,14 @@ $ open http://localhost:8000
 One web service — the official PHP 8.5.12 Apache image, the framework's
 `public/` directory as docroot, dependencies installed by Composer at build
 time — plus the MySQL 8.0 service, unchanged from the legacy stack (the
-production database carries over as-is). Configuration comes from the
-environment file: the committed `env` template carries the docker-compose
-development values and the image bakes it to `.env`. No credentials live in
-code.
+production database carries over as-is), and a Mailpit service: the dev/test
+mailbox the reset-password flow delivers to (#38), inbox at
+http://localhost:8025. Configuration comes from the environment file: the
+committed `env` template carries the docker-compose development values and
+the image bakes it to `.env`. No credentials live in code — one value ships
+blank on purpose: `resettokens.secret`. The forgot-password flow fails
+closed until it is set (`openssl rand -hex 32`, per ADR-0006);
+`scripts/run-acceptance.sh` injects a throwaway one for its runs.
 
 ## Test
 

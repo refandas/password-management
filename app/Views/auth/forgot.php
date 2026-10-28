@@ -5,6 +5,7 @@
         </div>
         <div class="card-body">
             <form action="<?= base_url('auth/resetpassword'); ?>" method="POST" id="login" class="p-2">
+                <?= session()->getFlashdata('success'); ?>
                 <?= session()->getFlashdata('failed'); ?>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>

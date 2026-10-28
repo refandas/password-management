@@ -15,6 +15,13 @@ docker compose up -d
 until docker compose exec -T db mysql -uroot -proot -e 'SELECT 1' >/dev/null 2>&1; do
     sleep 1
 done
+# The reset-token flow fails closed without resettokens.secret (#38): the
+# template ships it blank and the rebuilt image bakes the template, so give
+# the acceptance stack a throwaway secret - generated per run, never
+# committed - for the forgot-password tests' mail round-trip.
+secret=$(openssl rand -hex 32)
+docker compose exec -T web sh -c \
+    "sed -i \"s|^resettokens.secret *=.*|resettokens.secret = ${secret}|\" /var/www/password-manager/.env"
 
 # Load the fixture and assert the DB leg of the path: schema.sql drops and
 # recreates every table, so every load starts from the same dataset — and
