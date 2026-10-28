@@ -39,6 +39,21 @@ final class ShellTest extends AcceptanceTestCase
         $this->assertStringNotContainsString('jquery', strtolower($page->body));
     }
 
+    public function testTheDashboardLandingPageAssemblesTheShell(): void
+    {
+        $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
+        $page = $this->http('GET', '/dashboard');
+        $this->assertSame(200, $page->statusCode);
+        // #35: the landing page assembles the full shell, not just the
+        // content wrapper — the sidebar reaches the page users see first.
+        $this->assertStringContainsString('id="appSidebar"', $page->body);
+        $this->assertStringContainsString('data-bs-target="#appSidebar"', $page->body);
+        $this->assertStringContainsString('class="app-footer"', $page->body);
+        $this->assertEveryReferencedAssetResolves($page->body);
+        $this->assertNoThirdPartyOrigin($page->body);
+        $this->assertStringNotContainsString('jquery', strtolower($page->body));
+    }
+
     public function testTheChangePasswordPageCarriesNoJquery(): void
     {
         $this->http('POST', '/auth/login', ['email' => 'jack@email.com', 'password' => 'user1234']);
