@@ -1,7 +1,8 @@
 # Full scan of the repo on a weekly cron and on pushes to the integration
-# branches. Advisory for now: findings are uploaded to the Security tab but
-# do not fail the run. Baseline was clean (2026-10-29, 33 packages); flip
-# fail-on-vuln to true after the first scheduled run confirms green.
+# branches. Strict: findings are uploaded to the Security tab and fail the
+# run. Baseline verified clean on both develop and master (2026-10-29,
+# 33 packages, no findings); accept an unavoidable finding with an
+# osv-scanner.toml ignore rather than reverting this flag.
 # Note: cron runs fire only from the default branch, so the weekly scan
 # activates once this workflow reaches master.
 name: OSV-Scanner Scheduled Scan
@@ -22,4 +23,4 @@ jobs:
     # v2.3.8 was the latest release when this was added; bump deliberately.
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.8
     with:
-      fail-on-vuln: false
+      fail-on-vuln: true
