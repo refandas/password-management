@@ -1,0 +1,21 @@
+# Fails only on vulnerabilities newly introduced by the PR (it diffs the
+# feature-branch scan against the target-branch scan), so it is safe to
+# enable as a gate from day one.
+name: OSV-Scanner PR Scan
+
+on:
+  pull_request:
+    branches: [develop]
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  scan-pr:
+    # v2.3.8 was the latest release when this was added; bump deliberately.
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.8
+    with:
+      scan-args: |-
+        -r ./

@@ -167,9 +167,9 @@ class Auth extends BaseController
     public function activateUser($id_user = null): RedirectResponse
     {
         if (model(UserModel::class)->activateUser($id_user)) {
-            session()->setFlashdata('success', '<div style="color: #00c054">Aktivasi akun berhasil</div>');
+            session()->setFlashdata('success', '<div style="color: #00c054">User activated successfully.</div>');
         } else {
-            session()->setFlashdata('failed', '<div style="color: #a71d2a">Aktivasi akun gagal</div>');
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">User activation failed.</div>');
         }
 
         return $this->legacyRedirect('dashboard/users');
@@ -182,9 +182,9 @@ class Auth extends BaseController
     public function deactivateUser($id_user = null): RedirectResponse
     {
         if (model(UserModel::class)->disableUser($id_user)) {
-            session()->setFlashdata('success', '<div style="color: #00c054">Deaktivasi akun berhasil</div>');
+            session()->setFlashdata('success', '<div style="color: #00c054">User deactivated successfully.</div>');
         } else {
-            session()->setFlashdata('failed', '<div style="color: #a71d2a">Deaktivasi akun gagal</div>');
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">User deactivation failed.</div>');
         }
 
         return $this->legacyRedirect('dashboard/users');

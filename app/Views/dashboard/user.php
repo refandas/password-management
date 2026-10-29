@@ -25,11 +25,11 @@
                         <h5 class="card-header"><?php echo $user['name'] ?? ''; ?></h5>
                         <div class="card-body">
                             <?php if ((int)($user['registered'] ?? 0)) : ?>
-                            <p>Status akun aktif, klik tombol berikut untuk mengaktifkan</p>
-                            <a href="<?php echo base_url('auth/deactivateuser/') . ($user['id_user'] ?? ''); ?>" class="btn btn-danger">Nonaktifkan User</a>
+                            <p>This user is active. Click the button below to deactivate.</p>
+                            <a href="<?php echo base_url('auth/deactivateuser/') . ($user['id_user'] ?? ''); ?>" class="btn btn-danger">Deactivate User</a>
                             <?php else : ?>
-                            <p>Status akun nonaktif, klik tombol berikut untuk menonaktifkan</p>
-                            <a href="<?php echo base_url('auth/activateuser/') . ($user['id_user'] ?? ''); ?>" class="btn btn-success">Aktifkan User</a>
+                            <p>This user is inactive. Click the button below to activate.</p>
+                            <a href="<?php echo base_url('auth/activateuser/') . ($user['id_user'] ?? ''); ?>" class="btn btn-success">Activate User</a>
                             <?php endif; ?>
                         </div>
                     </div>
