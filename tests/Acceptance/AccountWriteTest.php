@@ -14,6 +14,9 @@ namespace Tests\Acceptance;
  * else branch in CI3), update and delete check nothing at all. The parity
  * holes stay until the post-migration fixes (spec #1).
  *
+ * One CI3 quirk is deliberately not ported: bare /account/delete 404s —
+ * the last test pins that divergence (issue #30).
+ *
  * The tests run in declaration order against the once-seeded database
  * (the runner re-seeds every full run): the add test's row feeds the edit
  * and delete tests, and the ungated test consumes rows nothing after it
@@ -104,9 +107,9 @@ final class AccountWriteTest extends AcceptanceTestCase
         // the form posted.
         $list = $this->http('GET', '/account');
         $this->assertSame(200, $list->statusCode);
-        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-medium mr-2"></i>Medium</h5>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>jack.sails@seamail.example</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>br1ng-me-that-horizon</label>', $list->body);
+        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-medium me-2"></i>Medium</h5>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>jack.sails@seamail.example</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>br1ng-me-that-horizon</label>', $list->body);
     }
 
     public function testEditingAVaultAccountReEncryptsTheStoredCredential(): void
@@ -144,9 +147,9 @@ final class AccountWriteTest extends AcceptanceTestCase
         // plaintexts are gone.
         $list = $this->http('GET', '/account');
         $this->assertSame(200, $list->statusCode);
-        $this->assertStringContainsString('<label><i class="fas fa-user mr-2"></i>jack.sparrow.cursed@seamail.example</label>', $list->body);
-        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt mr-2"></i>why-is-the-rum-gone</label>', $list->body);
-        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-instagram mr-2"></i>Instagram</h5>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-user me-2"></i>jack.sparrow.cursed@seamail.example</label>', $list->body);
+        $this->assertStringContainsString('<label><i class="fas fa-unlock-alt me-2"></i>why-is-the-rum-gone</label>', $list->body);
+        $this->assertStringContainsString('<h5 class="card-header"><i class="fab fa-instagram me-2"></i>Instagram</h5>', $list->body);
         $this->assertStringNotContainsString('insta-pass-0123', $list->body);
     }
 
@@ -172,7 +175,7 @@ final class AccountWriteTest extends AcceptanceTestCase
 
         // The entry is gone: no card for the deleted account…
         $this->assertStringNotContainsString('jack.sails@seamail.example', $list->body);
-        $this->assertStringNotContainsString('<h5 class="card-header"><i class="fab fa-medium mr-2"></i>Medium</h5>', $list->body);
+        $this->assertStringNotContainsString('<h5 class="card-header"><i class="fab fa-medium me-2"></i>Medium</h5>', $list->body);
 
         // …and its detail page renders the empty form (the missing-row
         // render ticket #11 pinned).
@@ -221,6 +224,17 @@ final class AccountWriteTest extends AcceptanceTestCase
         $this->http('GET', '/account/delete/4');
         $after = $this->http('GET', '/account');
         $this->assertSame(200, $after->statusCode);
-        $this->assertStringNotContainsString('<h5 class="card-header"><i class="fab fa-steam mr-2"></i>Steam</h5>', $after->body);
+        $this->assertStringNotContainsString('<h5 class="card-header"><i class="fab fa-steam me-2"></i>Steam</h5>', $after->body);
+    }
+
+    public function testDeleteWithoutAnIdIsA404(): void
+    {
+        // CI3 auto-routing answered the bare URL with delete(null): the
+        // where matched no row, the flash still said "Delete account
+        // successfully.", and the list followed. The defined route requires
+        // the segment, so both verbs 404 — the deliberate divergence
+        // (issue #30) pinned here.
+        $this->assertSame(404, $this->http('GET', '/account/delete')->statusCode);
+        $this->assertSame(404, $this->http('POST', '/account/delete')->statusCode);
     }
 }

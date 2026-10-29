@@ -73,3 +73,25 @@ database.default.port = 3306
 #--------------------------------------------------------------------
 
 # logger.threshold = 4
+
+#--------------------------------------------------------------------
+# RESET LINKS (#38)
+# Mailpit is the dev/test mailbox (docker-compose service `mailpit`); a
+# real deployment points SMTP at its own server and sets its own secret.
+#--------------------------------------------------------------------
+email.fromEmail = 'no-reply@password-management.local'
+email.fromName = 'Password Management'
+email.protocol = smtp
+email.SMTPHost = mailpit
+email.SMTPPort = 1025
+email.SMTPUser = ''
+email.SMTPPass = ''
+email.SMTPCrypto = ''
+# wordWrap off: the reset link is longer than the wrap width and must
+# not break across lines in the message.
+email.wordWrap = false
+# Generate per deployment (openssl rand -hex 32) and set here or in the
+# deployment's .env: blank fails closed - the forgot flow refuses loudly
+# until a secret exists. Never commit a real one; a known secret makes
+# every Reset Token forgeable.
+resettokens.secret = ''

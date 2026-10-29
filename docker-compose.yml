@@ -22,3 +22,12 @@ services:
             MYSQL_PASSWORD: latihan
         ports:
             - 6036:3306
+
+    # The reset-password round-trip needs a mailbox (#38): Mailpit speaks SMTP
+    # for the app (email.* in `env`) and the acceptance suite reads the inbox
+    # over its HTTP API. Dev/test only - a real deployment points SMTP elsewhere.
+    mailpit:
+        container_name: pass-manag-mailpit
+        image: axllent/mailpit:v1.32.0
+        ports:
+            - 8025:8025

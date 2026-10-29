@@ -27,7 +27,7 @@ final class RegistrationTest extends AcceptanceTestCase
         $this->assertStringContainsString('<form action="http://localhost:8000/auth/create" method="POST"', $response->body);
         // The legacy typo renders today as it did on PHP 7.3.
         $this->assertStringContainsString('Accept license aggrement.', $response->body);
-        $this->assertStringContainsString('Same password', $response->body);
+        $this->assertStringContainsString('assets/js/password-match.js', $response->body);
     }
 
     public function testRegistrationCreatesAUserAndFlashesTheActivationMessage(): void

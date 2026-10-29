@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 offset-6">
-                    <ol class="breadcrumb float-sm-right">
+                    <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="<?php echo base_url('dashboard'); ?>">Home</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo base_url('account'); ?>">Account</a></li>
                         <li class="breadcrumb-item active">Detail Account</li>
@@ -26,17 +26,17 @@
 
                 <div class="card-body">
                     <form action="<?= base_url('account/update/') . ($account['id_account'] ?? ''); ?>" method="POST">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label>Username</label>
                             <input type="text" class="form-control col-md-6" placeholder="username or email" name="username_email" value="<?= $account['username_email'] ?? ''; ?>">
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label>Password</label>
                             <input type="text" class="form-control col-md-6" placeholder="password" name="password" value="<?= $account['password'] ?? ''; ?>">
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-dark mr-1">Save</button>
-                            <a href="<?= base_url('account/delete/') . ($account['id_account'] ?? ''); ?>" class="btn btn-outline-danger ml-1">Delete</a>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-dark me-1">Save</button>
+                            <a href="<?= base_url('account/delete/') . ($account['id_account'] ?? ''); ?>" class="btn btn-outline-danger ms-1">Delete</a>
                         </div>
                     </form>
                     <!-- /.card -->
@@ -50,9 +50,3 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
-<!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-</aside>
-<!-- /.control-sidebar -->

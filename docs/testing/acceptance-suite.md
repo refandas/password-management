@@ -159,7 +159,12 @@ All configuration comes from the framework's environment file: the committed
 `env` template holds the docker-compose development values and the image bakes
 it to `.env` at build. `app/Config/Database.php` contains placeholders only —
 `database.default.*` in `.env` supplies hostname, database, username,
-password, and driver, applied by CI4's config-to-env binding.
+password, and driver, applied by CI4's config-to-env binding. The one
+exception is `resettokens.secret` (#38): it ships blank — the forgot flow
+fails closed without a real one — so `scripts/run-acceptance.sh` injects a
+throwaway secret into the container's `.env` after the rebuild, generated
+per run and never committed. Mail is the same shape: the suite reads the
+mailbox at `http://mailpit:8025` (`ACCEPTANCE_MAILPIT_URL` to override).
 
 ## Parity sweep 2026-10-26 (ticket #16)
 

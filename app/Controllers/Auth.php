@@ -2,8 +2,11 @@
 
 namespace App\Controllers;
 
+use App\Libraries\ResetToken;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\RedirectResponse;
+use Config\Email;
+use Config\ResetTokens;
 
 /**
  * Authentication pages, ported from the CI3 Auth controller (pre-migration).
@@ -95,33 +98,60 @@ class Auth extends BaseController
     }
 
     /**
-     * Look up the email from the forgot form: found → the reset form renders
-     * directly (a POST that answers a page); missing → the legacy flash and
-     * back to the form. No verification sits between the two steps — the
-     * known weakness, kept for parity (post-migration backlog).
+     * Look up the email from the forgot form (#38): found → a Reset Token
+     * is minted and the link emailed to the User, and the forgot page
+     * answers with the green flash — the set-password form no longer
+     * renders here, since the form carried the id the write accepted,
+     * which was the hole. Missing → the legacy flash and back to the form.
      */
-    public function resetPassword(): string|RedirectResponse
+    public function resetPassword(): RedirectResponse
     {
         $email = $this->request->getPost('email');
-        $users = model(UserModel::class);
+        $user  = model(UserModel::class)->findUserByEmail($email);
 
-        if ($users->userIsExists($email)) {
-            return $this->page('auth/set_password', 'Reset Password', ['user' => $users->findUserByEmail($email)]);
+        if ($user !== null) {
+            $this->sendResetLink($user);
+            session()->setFlashdata('success', '<div style="color: #00c054">A password reset link has been sent to your email.</div>');
+        } else {
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">Email not found</div>');
         }
-
-        session()->setFlashdata('failed', '<div style="color: #a71d2a">Email not found</div>');
 
         return $this->legacyRedirect('auth/forgotpassword');
     }
 
     /**
-     * Store the new password from the reset form (legacy setPassword()).
-     * Flashes success unconditionally — like CI3, no check that the update
-     * matched a row.
+     * Serve the emailed link's set-password page, and store the new password
+     * from it (#38). The segment is the Reset Token, never the User id: an
+     * invalid, expired, or already-spent token — and any id-shaped segment,
+     * the pre-fix attack — bounces to the forgot page with the red flash
+     * and writes nothing. The retype match is checked server-side, like the
+     * Setting flow's since #34; success keeps the legacy flash and
+     * redirect.
      */
-    public function setPassword($id_user = null): RedirectResponse
+    public function setPassword($token = null): string|RedirectResponse
     {
-        model(UserModel::class)->setPassword((string) $this->request->getPost('password'), $id_user);
+        $user = ResetToken::verify($token);
+
+        if ($user === null) {
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">The reset link is invalid or expired.</div>');
+
+            return $this->legacyRedirect('auth/forgotpassword');
+        }
+
+        if (strtolower($this->request->getMethod()) === 'get') {
+            return $this->page('auth/set_password', 'Reset Password', ['user' => $user, 'token' => (string) $token]);
+        }
+
+        $password = (string) $this->request->getPost('password');
+        $retype   = (string) $this->request->getPost('password_check');
+
+        if ($password !== $retype) {
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">Passwords do not match!</div>');
+
+            return $this->legacyRedirect('auth/forgotpassword');
+        }
+
+        model(UserModel::class)->setPassword($password, $user['id_user']);
 
         session()->setFlashdata('success', '<div style="color: #00c054">Reset password success.</div>');
 
@@ -137,9 +167,9 @@ class Auth extends BaseController
     public function activateUser($id_user = null): RedirectResponse
     {
         if (model(UserModel::class)->activateUser($id_user)) {
-            session()->setFlashdata('success', '<div style="color: #00c054">Aktivasi akun berhasil</div>');
+            session()->setFlashdata('success', '<div style="color: #00c054">User activated successfully.</div>');
         } else {
-            session()->setFlashdata('failed', '<div style="color: #a71d2a">Aktivasi akun gagal</div>');
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">User activation failed.</div>');
         }
 
         return $this->legacyRedirect('dashboard/users');
@@ -152,11 +182,37 @@ class Auth extends BaseController
     public function deactivateUser($id_user = null): RedirectResponse
     {
         if (model(UserModel::class)->disableUser($id_user)) {
-            session()->setFlashdata('success', '<div style="color: #00c054">Deaktivasi akun berhasil</div>');
+            session()->setFlashdata('success', '<div style="color: #00c054">User deactivated successfully.</div>');
         } else {
-            session()->setFlashdata('failed', '<div style="color: #a71d2a">Deaktivasi akun gagal</div>');
+            session()->setFlashdata('failed', '<div style="color: #a71d2a">User deactivation failed.</div>');
         }
 
         return $this->legacyRedirect('dashboard/users');
+    }
+
+    /**
+     * Mint the Reset Token and email the link (#38). A failed send is
+     * logged and swallowed — the response stays identical either way, so a
+     * probe learns nothing about the mailbox behind an email address.
+     */
+    private function sendResetLink(array $user): void
+    {
+        $token   = ResetToken::mint($user);
+        $minutes = intdiv(config(ResetTokens::class)->ttlSeconds + 59, 60);
+
+        $email = service('email');
+        $email->setFrom(config(Email::class)->fromEmail, config(Email::class)->fromName);
+        $email->setTo($user['email']);
+        $email->setSubject('Reset your password');
+        $email->setMessage(
+            'Hi ' . $user['name'] . ",\n\n"
+            . "Use this link within {$minutes} minutes to reset your password:\n\n"
+            . base_url('auth/setpassword/' . $token) . "\n\n"
+            . 'If you did not request this, ignore this email.'
+        );
+
+        if (! $email->send()) {
+            log_message('error', 'Reset link failed to send for user ' . $user['id_user'] . '.');
+        }
     }
 }

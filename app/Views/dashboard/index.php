@@ -1,6 +1,6 @@
-<!-- Ticket #9 stub: the gated landing page proves the session keys. The full
-     AdminLTE dashboard (navbar, sidebar, user panel) ports with the layout
-     ticket. Legacy markup: <h2>HELLO {strtoupper(name)}</h2> -->
+<!-- #9's gated stub, now wearing the full shell: #35 moved it from
+     the bare page() sandwich to layoutPage(), matching every other
+     authenticated page. Legacy markup: <h2>HELLO {strtoupper(name)}</h2> -->
 <div class="content-wrapper">
     <div class="content">
         <div class="container-fluid">

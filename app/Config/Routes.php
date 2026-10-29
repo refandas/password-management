@@ -34,6 +34,10 @@ $routes->match(['get', 'post'], 'account/add_account', 'Account::addAccount');
 $routes->match(['get', 'post'], 'account/add', 'Account::add');
 $routes->match(['get', 'post'], 'account/update/(:segment)', 'Account::update/$1');
 $routes->match(['get', 'post'], 'account/delete/(:segment)', 'Account::delete/$1');
+// The bare account/delete is deliberately un-routed: CI3 auto-routing ran
+// delete(null) there — no row matched, yet the flash still said "Delete
+// account successfully." and the list followed. It 404s here instead
+// (issue #30, with ADR-0004's simpler surface), pinned in AccountWriteTest.
 
 // The settings pages (ticket #14) — `setting` is the sidebar's href.
 // `Setting` is the change-password page's breadcrumb spelling: CI3 matched

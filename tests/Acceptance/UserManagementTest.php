@@ -19,7 +19,7 @@ final class UserManagementTest extends AcceptanceTestCase
         $this->assertSame(200, $list->statusCode);
         $this->assertStringContainsString('<title>Users</title>', $list->body);
 
-        // The full AdminLTE sandwich renders, sidebar included: the
+        // The Bootstrap 5 shell renders, sidebar included (#32): the
         // Access Level 1 menu shows USER and hides ACCOUNT.
         $this->assertStringContainsString('<p>USER</p>', $list->body);
         $this->assertStringNotContainsString('<p>ACCOUNT</p>', $list->body);
@@ -67,10 +67,10 @@ final class UserManagementTest extends AcceptanceTestCase
         $this->assertStringContainsString('<li class="breadcrumb-item active">Jack</li>', $detail->body);
 
         // Jack is registered: the card carries the deactivate action — the
-        // legacy page's Indonesian status line, byte-identical.
+        // legacy status line, normalized to English (#4).
         $this->assertStringContainsString('<h5 class="card-header">Jack</h5>', $detail->body);
-        $this->assertStringContainsString('<p>Status akun aktif, klik tombol berikut untuk mengaktifkan</p>', $detail->body);
-        $this->assertStringContainsString('<a href="http://localhost:8000/auth/deactivateuser/2" class="btn btn-danger">Nonaktifkan User</a>', $detail->body);
+        $this->assertStringContainsString('<p>This user is active. Click the button below to deactivate.</p>', $detail->body);
+        $this->assertStringContainsString('<a href="http://localhost:8000/auth/deactivateuser/2" class="btn btn-danger">Deactivate User</a>', $detail->body);
     }
 
     public function testTheDetailPageOfAnUnactivatedUserOffersActivation(): void
@@ -81,9 +81,9 @@ final class UserManagementTest extends AcceptanceTestCase
         $detail = $this->http('GET', '/dashboard/user/3');
         $this->assertSame(200, $detail->statusCode);
         $this->assertStringContainsString('<li class="breadcrumb-item active">Ghost</li>', $detail->body);
-        $this->assertStringContainsString('<p>Status akun nonaktif, klik tombol berikut untuk menonaktifkan</p>', $detail->body);
-        $this->assertStringContainsString('<a href="http://localhost:8000/auth/activateuser/3" class="btn btn-success">Aktifkan User</a>', $detail->body);
-        $this->assertStringNotContainsString('Nonaktifkan User', $detail->body);
+        $this->assertStringContainsString('<p>This user is inactive. Click the button below to activate.</p>', $detail->body);
+        $this->assertStringContainsString('<a href="http://localhost:8000/auth/activateuser/3" class="btn btn-success">Activate User</a>', $detail->body);
+        $this->assertStringNotContainsString('Deactivate User', $detail->body);
     }
 
     public function testAnUnknownUserIdStillRendersTheActivationBranch(): void
@@ -100,7 +100,7 @@ final class UserManagementTest extends AcceptanceTestCase
         $this->assertStringContainsString('<title>User Detail</title>', $missing->body);
         $this->assertStringContainsString('<li class="breadcrumb-item active"></li>', $missing->body);
         $this->assertStringContainsString('<h5 class="card-header"></h5>', $missing->body);
-        $this->assertStringContainsString('<p>Status akun nonaktif, klik tombol berikut untuk menonaktifkan</p>', $missing->body);
-        $this->assertStringContainsString('<a href="http://localhost:8000/auth/activateuser/" class="btn btn-success">Aktifkan User</a>', $missing->body);
+        $this->assertStringContainsString('<p>This user is inactive. Click the button below to activate.</p>', $missing->body);
+        $this->assertStringContainsString('<a href="http://localhost:8000/auth/activateuser/" class="btn btn-success">Activate User</a>', $missing->body);
     }
 }
